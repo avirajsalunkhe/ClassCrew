@@ -292,6 +292,286 @@ This ensures:
 
 ---
 
+# 📦 Production Installation Guide
+
+This section explains how to deploy the Digital Coaching DFS Platform in a production environment.
+
+---
+
+## 🖥 Server Requirements
+
+| Component | Recommended Version |
+|-----------|--------------------|
+| PHP | 8.1 or higher |
+| MySQL | 8.0+ |
+| Apache / Nginx | Latest stable |
+| Composer | Latest |
+| OpenSSL | Enabled |
+| cURL | Enabled |
+| JSON Extension | Enabled |
+| CLI PHP | Required (for DFS worker) |
+
+---
+
+## 🔧 Step 1: Clone the Repository
+
+```bash
+git clone https://your-repository-url.git
+cd project-root
+````
+
+---
+
+## 📥 Step 2: Install Dependencies
+
+```bash
+composer install --no-dev --optimize-autoloader
+```
+
+---
+
+## 🗄 Step 3: Configure Database
+
+### 1️⃣ Create Database
+
+```sql
+CREATE DATABASE coaching_platform;
+```
+
+### 2️⃣ Import Schema
+
+```bash
+mysql -u root -p coaching_platform < login_system_db.sql
+```
+
+### 3️⃣ Update `db_config.php`
+
+```php
+define('DB_HOST', 'localhost');
+define('DB_NAME', 'coaching_platform');
+define('DB_USER', 'your_db_user');
+define('DB_PASS', 'your_db_password');
+```
+
+---
+
+## 🔐 Step 4: Configure Google OAuth
+
+### Create OAuth Credentials
+
+1. Go to: [https://console.cloud.google.com/](https://console.cloud.google.com/)
+2. Create a new project
+3. Enable:
+
+   * Google Drive API
+   * Google OAuth API
+4. Create OAuth 2.0 Client ID
+5. Add authorized redirect URIs:
+
+```
+https://yourdomain.com/google_callback.php
+https://yourdomain.com/link_google_callback.php
+```
+
+### Update `db_config.php`
+
+```php
+define('GOOGLE_CLIENT_ID', 'your-client-id');
+define('GOOGLE_CLIENT_SECRET', 'your-client-secret');
+define('GOOGLE_REDIRECT_URI', 'https://yourdomain.com/google_callback.php');
+```
+
+---
+
+## 💳 Step 5: Configure Razorpay
+
+1. Login to [https://dashboard.razorpay.com/](https://dashboard.razorpay.com/)
+2. Generate API Keys
+
+Update configuration:
+
+```php
+define('RAZORPAY_KEY_ID', 'your_key_id');
+define('RAZORPAY_SECRET', 'your_secret');
+```
+
+---
+
+## 📂 Step 6: Set Folder Permissions
+
+```bash
+chmod -R 755 cache/
+chmod -R 755 temp_uploads/
+```
+
+If required:
+
+```bash
+chown -R www-data:www-data project-root/
+```
+
+---
+
+## ⚙ Step 7: Configure DFS Worker
+
+The Distributed File System requires a background worker.
+
+---
+
+### 🐧 Linux (Recommended: Supervisor)
+
+Install Supervisor:
+
+```bash
+sudo apt install supervisor
+```
+
+Create config:
+
+```bash
+sudo nano /etc/supervisor/conf.d/dfs_worker.conf
+```
+
+Add:
+
+```
+[program:dfs_worker]
+command=php /var/www/project-root/worker_process.php
+autostart=true
+autorestart=true
+stderr_logfile=/var/log/dfs_worker.err.log
+stdout_logfile=/var/log/dfs_worker.out.log
+```
+
+Reload:
+
+```bash
+sudo supervisorctl reread
+sudo supervisorctl update
+sudo supervisorctl start dfs_worker
+```
+
+---
+
+### 🪟 Windows Server
+
+Run:
+
+```bash
+start_worker.bat
+```
+
+Or configure via Task Scheduler.
+
+---
+
+## 🌐 Step 8: Configure Web Server
+
+---
+
+### Apache Example
+
+Enable rewrite:
+
+```bash
+a2enmod rewrite
+systemctl restart apache2
+```
+
+Virtual Host:
+
+```
+<VirtualHost *:80>
+    ServerName yourdomain.com
+    DocumentRoot /var/www/project-root
+</VirtualHost>
+```
+
+---
+
+### Nginx Example
+
+```
+server {
+    listen 80;
+    server_name yourdomain.com;
+
+    root /var/www/project-root;
+    index index.php;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    }
+}
+```
+
+---
+
+## 🔒 Step 9: Enable HTTPS
+
+Install Certbot:
+
+```bash
+sudo apt install certbot
+```
+
+Apache:
+
+```bash
+sudo certbot --apache
+```
+
+Nginx:
+
+```bash
+sudo certbot --nginx
+```
+
+---
+
+## 🧪 Step 10: Verification Checklist
+
+* [ ] Admin login works
+* [ ] Google OAuth login works
+* [ ] Google Drive linking works
+* [ ] DFS upload creates job
+* [ ] Worker processes queue
+* [ ] File reassembly works
+* [ ] Razorpay test payment works
+
+---
+
+# 🛡 Production Hardening Recommendations
+
+* Disable `display_errors` in php.ini
+* Store secrets in environment variables
+* Restrict public access to config files
+* Enable firewall (UFW)
+* Enforce HTTPS only
+* Enable logging & monitoring
+* Use strong DB passwords
+
+---
+
+# 🚀 Deployment Complete
+
+After completing the above steps, your system will be:
+
+* Cloud-integrated
+* Distributed
+* Secure
+* Payment-enabled
+* Background-processed
+* Production-ready
+
+---
+
 # 🏁 Final Summary
 
 The Digital Coaching DFS Platform represents a **secure, distributed, cloud-powered academic management system** designed with enterprise-level architecture principles.
@@ -304,4 +584,4 @@ It combines:
 ✔ Distributed encrypted storage
 ✔ Modular scalability
 
----
+
