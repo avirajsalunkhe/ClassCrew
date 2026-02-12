@@ -1,0 +1,7 @@
+{
+    "require": {
+        "google/apiclient": "^2.15",
+        "ext-pdo": "*",
+        "ext-json": "*"
+    }
+}
