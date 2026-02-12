@@ -7,8 +7,8 @@ define('DB_NAME', 'login_system_db');
 
 // Google OAuth Credentials
 // Get these from Google API Console -> Credentials -> OAuth 2.0 Client IDs
-define('GOOGLE_CLIENT_ID', '759349791864-ftu9te4521fjgdru603s2vgmp63ri0ps.apps.googleusercontent.com');
-define('GOOGLE_CLIENT_SECRET', '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');
+define('GOOGLE_CLIENT_ID',' ');
+define('GOOGLE_CLIENT_SECRET', '');
 
 // Must match the Authorized redirect URI in Google Console
 $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
@@ -20,4 +20,5 @@ define('GOOGLE_REDIRECT_URL', $protocol . '://' . $domain . $path);
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
+
 ?>
