@@ -589,7 +589,7 @@ It combines:
 # 👤 Author
 
 **Aviraj Salunkhe**
-📧 [avirajsalunkhe1@gmail.com](mailto:avirajsalunkhe1@gmail.com)
+📧 [Email Me](mailto:avirajsalunkhe1@gmail.com)
 🌐 [GitHub Profile](https://github.com/avirajsalunkhe)
 
 **Swayam Gunjal**
