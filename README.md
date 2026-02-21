@@ -584,4 +584,17 @@ It combines:
 ✔ Distributed encrypted storage
 ✔ Modular scalability
 
+---
+#👤 Author
 
+**Aviraj Salunkhe**  
+📧 [avirajsalunkhe1@gmail.com](mailto:avirajsalunkhe1@gmail.com)  
+🌐 [GitHub Profile](https://github.com/avirajsalunkhe)
+
+**Swayam Gunjal** 
+📧 [Email Me](mailto:swayamgunjal.it.nbnistic@gmail.com) 
+🌐 [GitHub Profile](https://github.com/SwayamGunjal)
+
+**Vedant Ghode**
+📧 [Email Me](mailto:vedantghode32@gmail.com) 
+🌐 [GitHub Profile](https://github.com/vveeddntt)
