@@ -584,8 +584,9 @@ It combines:
 ✔ Distributed encrypted storage
 ✔ Modular scalability
 
+---
 
-#👤 Author
+# 👤 Author
 
 **Aviraj Salunkhe**  
 📧 [avirajsalunkhe1@gmail.com](mailto:avirajsalunkhe1@gmail.com)  
