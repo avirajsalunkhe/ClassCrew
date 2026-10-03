@@ -583,6 +583,7 @@ It combines:
 ✔ Payment automation
 ✔ Distributed encrypted storage
 ✔ Modular scalability
+✔ Stable and platform independent
 
 ---
 
