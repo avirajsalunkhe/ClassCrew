@@ -208,7 +208,7 @@ flowchart TD
     StudentPortal --> NotesModule
     StudentPortal --> ChatConsole
 ```
-The main teaching loop connects batches, attendance, homework, exams, notes, and communication. Each day, these modules coordinate around batch definitions and membership.
+The main teaching loop connects batches, fees, attendance, homework, exams, notes, and communication. Each day, these modules coordinate around batch definitions and membership.
 
 ---
 
