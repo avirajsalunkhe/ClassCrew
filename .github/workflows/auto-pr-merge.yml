@@ -1,33 +1,39 @@
 name: Automated PR and Merge
 
 on:
+  # Run every 12 hours
   schedule:
-    # Every 12 hours
     - cron: "0 */12 * * *"
 
-  # Allows manual testing
+  # Allow manual execution from GitHub Actions
   workflow_dispatch:
-
-permissions:
-  contents: write
-  pull-requests: write
 
 jobs:
   automated-change:
     runs-on: ubuntu-latest
 
     steps:
+      # --------------------------------------------------
+      # 1. Checkout existing branch
+      # --------------------------------------------------
       - name: Checkout SwayamGunjal-patch-1
         uses: actions/checkout@v4
         with:
           ref: SwayamGunjal-patch-1
           fetch-depth: 0
+          token: ${{ secrets.AVIRAJ_PAT }}
 
+      # --------------------------------------------------
+      # 2. Configure your Git identity
+      # --------------------------------------------------
       - name: Configure Git identity
         run: |
           git config user.name "Aviraj Salunkhe"
           git config user.email "96661930+avirajsalunkhe@users.noreply.github.com"
 
+      # --------------------------------------------------
+      # 3. Generate a real change
+      # --------------------------------------------------
       - name: Generate automated change
         run: |
           mkdir -p .github/automation
@@ -44,14 +50,22 @@ jobs:
 
           git commit -m "chore: automated repository update"
 
+      # --------------------------------------------------
+      # 4. Push change to SwayamGunjal-patch-1
+      # --------------------------------------------------
       - name: Push changes
+        env:
+          GH_TOKEN: ${{ secrets.AVIRAJ_PAT }}
         run: |
           git push origin HEAD:SwayamGunjal-patch-1
 
+      # --------------------------------------------------
+      # 5. Create Pull Request
+      # --------------------------------------------------
       - name: Create Pull Request
         id: create_pr
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.AVIRAJ_PAT }}
         run: |
           PR_URL=$(gh pr create \
             --repo "${{ github.repository }}" \
@@ -60,15 +74,29 @@ jobs:
             --title "chore: automated repository update" \
             --body "Automated repository maintenance update.")
 
+          echo "Created PR: $PR_URL"
+
           echo "pr_url=$PR_URL" >> "$GITHUB_OUTPUT"
 
+      # --------------------------------------------------
+      # 6. Wait 20 seconds
+      # --------------------------------------------------
       - name: Wait 20 seconds
-        run: sleep 20
+        run: |
+          echo "Waiting 20 seconds before merging..."
+          sleep 20
 
+      # --------------------------------------------------
+      # 7. Merge Pull Request
+      # --------------------------------------------------
       - name: Merge Pull Request
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.AVIRAJ_PAT }}
         run: |
+          echo "Merging pull request..."
+
           gh pr merge "${{ steps.create_pr.outputs.pr_url }}" \
             --merge \
             --delete-branch=false
+
+          echo "Pull request merged successfully."
