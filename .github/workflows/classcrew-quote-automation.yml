@@ -5,7 +5,6 @@ on:
     # Every 12 hours
     - cron: "17 */12 * * *"
 
-  # Allows manual execution from GitHub Actions
   workflow_dispatch:
 
 permissions:
@@ -52,76 +51,136 @@ jobs:
           git config user.email "96661930+avirajsalunkhe@users.noreply.github.com"
 
       # =========================================================
-      # 3. CREATE UNIQUE WORKING BRANCH
+      # 3. VERIFY GITHUB AUTHENTICATION
       # =========================================================
 
-      - name: Create automation branch
+      - name: Verify GitHub authentication
+        env:
+          GH_TOKEN: ${{ secrets.AVIRAJ_PAT }}
         run: |
-          BRANCH="automation/quote-${{ github.run_id }}"
-          echo "BRANCH=$BRANCH" >> "$GITHUB_ENV"
+          echo "Checking GitHub authentication..."
 
-          git checkout -b "$BRANCH"
+          gh auth status
+
+          echo ""
+          echo "Checking repository access..."
+
+          gh repo view "${{ github.repository }}" \
+            --json nameWithOwner,viewerPermission
 
       # =========================================================
-      # 4. VERIFY QUOTE DATABASE
+      # 4. CREATE UNIQUE DATA BRANCH
+      # =========================================================
+
+      - name: Create quote data branch
+        run: |
+          DATA_BRANCH="automation/quote-data-${{ github.run_id }}"
+
+          echo "DATA_BRANCH=$DATA_BRANCH" >> "$GITHUB_ENV"
+
+          git checkout -b "$DATA_BRANCH"
+
+      # =========================================================
+      # 5. VALIDATE QUOTE DATABASE
       # =========================================================
 
       - name: Validate quote database
         run: |
-
           python3 - <<'PY'
-
           import json
           from pathlib import Path
 
-          quotes_file = Path("php_auth_system/data/daily_quotes.json")
+          quotes_file = Path(
+              "php_auth_system/data/daily_quotes.json"
+          )
 
           if not quotes_file.exists():
               raise SystemExit(
-                  "daily_quotes.json does not exist."
+                  "ERROR: daily_quotes.json does not exist."
               )
 
-          quotes = json.loads(
-              quotes_file.read_text(
-                  encoding="utf-8"
+          raw = quotes_file.read_text(
+              encoding="utf-8"
+          ).strip()
+
+          if not raw:
+              raise SystemExit(
+                  "ERROR: daily_quotes.json is empty."
               )
-          )
+
+          try:
+              quotes = json.loads(raw)
+          except json.JSONDecodeError as error:
+              raise SystemExit(
+                  f"ERROR: Invalid JSON in daily_quotes.json: {error}"
+              )
 
           if not isinstance(quotes, list):
               raise SystemExit(
-                  "Quote database must be a JSON array."
+                  "ERROR: Quote database must be a JSON array."
               )
 
           if len(quotes) == 0:
               raise SystemExit(
-                  "Quote database is empty."
+                  "ERROR: Quote database is empty."
               )
 
-          ids = [
-              quote["id"]
-              for quote in quotes
-          ]
+          ids = []
+
+          for index, quote in enumerate(quotes, start=1):
+
+              if not isinstance(quote, dict):
+                  raise SystemExit(
+                      f"ERROR: Quote #{index} is not an object."
+                  )
+
+              if "id" not in quote:
+                  raise SystemExit(
+                      f"ERROR: Quote #{index} has no id."
+                  )
+
+              if "quote" not in quote:
+                  raise SystemExit(
+                      f"ERROR: Quote #{index} has no quote text."
+                  )
+
+              if not quote["id"]:
+                  raise SystemExit(
+                      f"ERROR: Quote #{index} has an empty id."
+                  )
+
+              if not quote["quote"]:
+                  raise SystemExit(
+                      f"ERROR: Quote #{index} has empty quote text."
+                  )
+
+              ids.append(quote["id"])
 
           if len(ids) != len(set(ids)):
               raise SystemExit(
-                  "Duplicate quote IDs found."
+                  "ERROR: Duplicate quote IDs found."
               )
 
           print(
-              f"Quote database verified: {len(quotes)} quotes."
+              f"SUCCESS: Quote database verified."
           )
 
+          print(
+              f"Total quotes: {len(quotes)}"
+          )
+
+          print(
+              f"Unique quote IDs: {len(set(ids))}"
+          )
           PY
 
       # =========================================================
-      # 5. VERIFY / INITIALIZE HISTORY
+      # 6. VERIFY / INITIALIZE QUOTE HISTORY
       # =========================================================
 
       - name: Verify quote history
         run: |
-
           python3 - <<'PY'
-
           import json
           from pathlib import Path
 
@@ -130,44 +189,76 @@ jobs:
           )
 
           if not history_file.exists():
+              print(
+                  "quote_history.json does not exist."
+              )
 
               history_file.write_text(
                   "[]\n",
                   encoding="utf-8"
               )
 
-          history = json.loads(
-              history_file.read_text(
+          raw = history_file.read_text(
+              encoding="utf-8"
+          ).strip()
+
+          if not raw:
+              history_file.write_text(
+                  "[]\n",
                   encoding="utf-8"
               )
-          )
+              raw = "[]"
 
-          ids = [
-              item["quote_id"]
-              for item in history
-          ]
+          try:
+              history = json.loads(raw)
+          except json.JSONDecodeError as error:
+              raise SystemExit(
+                  f"ERROR: Invalid JSON in quote_history.json: {error}"
+              )
+
+          if not isinstance(history, list):
+              raise SystemExit(
+                  "ERROR: quote_history.json must contain a JSON array."
+              )
+
+          ids = []
+
+          for index, item in enumerate(history, start=1):
+
+              if not isinstance(item, dict):
+                  raise SystemExit(
+                      f"ERROR: History entry #{index} is not an object."
+                  )
+
+              if "quote_id" not in item:
+                  raise SystemExit(
+                      f"ERROR: History entry #{index} has no quote_id."
+                  )
+
+              ids.append(item["quote_id"])
 
           if len(ids) != len(set(ids)):
               raise SystemExit(
-                  "Duplicate quote found in quote history."
+                  "ERROR: Duplicate quote IDs found in quote history."
               )
 
           print(
-              f"Quote history verified: {len(ids)} unique quotes used."
+              f"SUCCESS: Quote history verified."
           )
 
+          print(
+              f"Used quotes: {len(ids)}"
+          )
           PY
 
       # =========================================================
-      # 6. SELECT NEXT UNUSED QUOTE
+      # 7. SELECT NEXT UNUSED QUOTE
       # =========================================================
 
       - name: Select unused quote
         id: quote
         run: |
-
           python3 - <<'PY'
-
           import json
           from pathlib import Path
           from datetime import datetime, timezone
@@ -204,7 +295,6 @@ jobs:
           ]
 
           if not unused:
-
               raise SystemExit(
                   "NO_UNUSED_QUOTES: "
                   "All quotes have already been used. "
@@ -216,6 +306,7 @@ jobs:
           timestamp = (
               datetime.now(timezone.utc)
               .isoformat()
+              .replace("+00:00", "Z")
           )
 
           record = {
@@ -236,50 +327,86 @@ jobs:
               encoding="utf-8"
           )
 
-          Path("/tmp/selected_quote.json").write_text(
+          selected_data = {
+              "id": selected["id"],
+              "quote": selected["quote"],
+              "source": selected.get(
+                  "source",
+                  "ClassCrew"
+              ),
+              "used_at": timestamp
+          }
 
+          Path(
+              "/tmp/selected_quote.json"
+          ).write_text(
               json.dumps(
-                  {
-                      "id": selected["id"],
-                      "quote": selected["quote"],
-                      "source": selected.get(
-                          "source",
-                          "ClassCrew"
-                      ),
-                      "used_at": timestamp
-                  },
+                  selected_data,
+                  indent=2,
                   ensure_ascii=False
               ),
-
               encoding="utf-8"
           )
 
           print(
-              "Selected quote:",
-              selected["id"]
+              f"Selected quote: {selected['id']}"
+          )
+
+          print(
+              selected["quote"]
+          )
+          PY
+
+      # =========================================================
+      # 8. SAVE SELECTED QUOTE TO GITHUB ENVIRONMENT
+      # =========================================================
+
+      - name: Export selected quote
+        run: |
+          python3 - <<'PY' >> "$GITHUB_ENV"
+          import json
+
+          with open(
+              "/tmp/selected_quote.json",
+              encoding="utf-8"
+          ) as file:
+              selected = json.load(file)
+
+          print(
+              f"SELECTED_QUOTE_ID={selected['id']}"
+          )
+
+          print(
+              "SELECTED_QUOTE<<EOF"
           )
 
           print(
               selected["quote"]
           )
 
+          print(
+              "EOF"
+          )
+
+          print(
+              f"SELECTED_UPDATED_AT={selected['used_at']}"
+          )
           PY
 
       # =========================================================
-      # 7. VERIFY SELECTION
+      # 9. VERIFY SELECTED QUOTE
       # =========================================================
 
       - name: Verify selected quote
         run: |
-
           python3 - <<'PY'
-
           import json
           from pathlib import Path
 
           selected = json.loads(
-              Path("/tmp/selected_quote.json")
-              .read_text(
+              Path(
+                  "/tmp/selected_quote.json"
+              ).read_text(
                   encoding="utf-8"
               )
           )
@@ -287,8 +414,7 @@ jobs:
           history = json.loads(
               Path(
                   "php_auth_system/data/quote_history.json"
-              )
-              .read_text(
+              ).read_text(
                   encoding="utf-8"
               )
           )
@@ -300,24 +426,21 @@ jobs:
           ]
 
           if len(matching) != 1:
-
               raise SystemExit(
-                  "Quote history verification failed."
+                  "ERROR: Quote history verification failed."
               )
 
           print(
-              "Selection verification passed."
+              "SUCCESS: Selection verification passed."
           )
 
           print(
-              "Quote ID:",
-              selected["id"]
+              f"Quote ID: {selected['id']}"
           )
-
           PY
 
       # =========================================================
-      # 8. CREATE ISSUE #1
+      # 10. CREATE ISSUE #1
       # =========================================================
 
       - name: Create Issue 1
@@ -325,7 +448,6 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.AVIRAJ_PAT }}
         run: |
-
           ISSUE_URL=$(gh issue create \
             --repo "${{ github.repository }}" \
             --title "Quote rotation data update - run ${{ github.run_number }}" \
@@ -338,16 +460,19 @@ jobs:
           - php_auth_system/data/daily_quotes.json
           - php_auth_system/data/quote_history.json
 
+          ### Selected Quote
+
+          Quote ID: ${SELECTED_QUOTE_ID}
+
           ### Verification
 
-          The workflow checks quote_history.json before selecting a quote.
+          The workflow checked quote_history.json before selecting this quote.
 
-          A quote already present in history cannot be selected again.
+          Previously used quote IDs cannot be selected again.
 
           ### Automation
 
-          Run:
-          ${{ github.run_number }}
+          Run: ${{ github.run_number }}
 
           Admin:
           https://github.com/avirajsalunkhe")
@@ -355,54 +480,65 @@ jobs:
           echo "ISSUE1_URL=$ISSUE_URL" >> "$GITHUB_ENV"
 
       # =========================================================
-      # 9. COMMENT ISSUE #1
+      # 11. COMMENT ISSUE #1
       # =========================================================
 
       - name: Comment on Issue 1
         env:
           GH_TOKEN: ${{ secrets.AVIRAJ_PAT }}
         run: |
-
           gh issue comment "$ISSUE1_URL" \
             --repo "${{ github.repository }}" \
             --body "Quote verification completed.
 
+          Selected quote ID: ${SELECTED_QUOTE_ID}
+
           The selected quote was checked against quote_history.json before this change.
 
-          The quote data and history will now be submitted through PR #1."
+          The quote history will now be submitted through PR #1."
 
       # =========================================================
-      # 10. PR #1 - QUOTE DATA
+      # 12. PREPARE PR #1
       # =========================================================
 
       - name: Prepare PR 1
         run: |
+          git add "$HISTORY_FILE"
 
-          git add \
-            "${HISTORY_FILE}"
+          git diff --cached --quiet && {
+            echo "ERROR: No quote history changes detected."
+            exit 1
+          }
 
           git commit \
             -m "chore: record quote rotation"
 
           git push \
-            origin "$BRANCH"
+            origin "$DATA_BRANCH"
+
+      # =========================================================
+      # 13. CREATE PR #1
+      # =========================================================
 
       - name: Create PR 1
         id: pr1
         env:
           GH_TOKEN: ${{ secrets.AVIRAJ_PAT }}
         run: |
-
           PR_URL=$(gh pr create \
             --repo "${{ github.repository }}" \
-            --head "$BRANCH" \
+            --head "$DATA_BRANCH" \
             --base "$TARGET_BRANCH" \
             --title "chore: record verified quote rotation" \
             --body "## Quote Rotation
 
           Records the next unused quote in quote_history.json.
 
-          ### Verification performed
+          ### Selected Quote
+
+          Quote ID: ${SELECTED_QUOTE_ID}
+
+          ### Verification
 
           - Quote database validated.
           - Quote IDs checked for duplicates.
@@ -416,44 +552,60 @@ jobs:
           echo "PR1_URL=$PR_URL" >> "$GITHUB_ENV"
 
       # =========================================================
-      # 11. COMMENT PR #1
+      # 14. COMMENT PR #1
       # =========================================================
 
       - name: Comment PR 1
         env:
           GH_TOKEN: ${{ secrets.AVIRAJ_PAT }}
         run: |
-
           gh pr comment "$PR1_URL" \
             --repo "${{ github.repository }}" \
             --body "Verification passed.
+
+          Selected quote ID: ${SELECTED_QUOTE_ID}
 
           The selected quote was not previously present in quote_history.json.
 
           Waiting 20 seconds before merge."
 
       # =========================================================
-      # 12. WAIT 20 SECONDS
+      # 15. WAIT 20 SECONDS
       # =========================================================
 
       - name: Wait before PR 1 merge
-        run: sleep 20
+        run: |
+          sleep 20
 
       # =========================================================
-      # 13. MERGE PR #1
+      # 16. MERGE PR #1
       # =========================================================
 
       - name: Merge PR 1
         env:
           GH_TOKEN: ${{ secrets.AVIRAJ_PAT }}
         run: |
-
           gh pr merge "$PR1_URL" \
             --merge \
             --delete-branch=false
 
       # =========================================================
-      # 14. CREATE ISSUE #2
+      # 17. FETCH NEW MAIN AFTER PR #1
+      # =========================================================
+
+      - name: Sync with merged main
+        run: |
+          git fetch origin main
+
+          PAGE_BRANCH="automation/quote-page-${{ github.run_id }}"
+
+          echo "PAGE_BRANCH=$PAGE_BRANCH" >> "$GITHUB_ENV"
+
+          git checkout -B "$PAGE_BRANCH" \
+            "origin/main"
+
+      # =========================================================
+      # 18. CREATE ISSUE #2
       # =========================================================
 
       - name: Create Issue 2
@@ -461,7 +613,6 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.AVIRAJ_PAT }}
         run: |
-
           ISSUE_URL=$(gh issue create \
             --repo "${{ github.repository }}" \
             --title "Update ClassCrew daily quote board - run ${{ github.run_number }}" \
@@ -472,6 +623,10 @@ jobs:
           ### Target
 
           Outlook Files/index.html
+
+          ### Selected Quote
+
+          Quote ID: ${SELECTED_QUOTE_ID}
 
           ### Requirements
 
@@ -494,40 +649,40 @@ jobs:
           echo "ISSUE2_URL=$ISSUE_URL" >> "$GITHUB_ENV"
 
       # =========================================================
-      # 15. COMMENT ISSUE #2
+      # 19. COMMENT ISSUE #2
       # =========================================================
 
       - name: Comment on Issue 2
         env:
           GH_TOKEN: ${{ secrets.AVIRAJ_PAT }}
         run: |
-
           gh issue comment "$ISSUE2_URL" \
             --repo "${{ github.repository }}" \
             --body "The quote has passed the duplicate-use check.
 
+          Selected quote ID: ${SELECTED_QUOTE_ID}
+
           The next PR will update Outlook Files/index.html with the verified quote."
 
       # =========================================================
-      # 16. UPDATE HTML PAGE
+      # 20. UPDATE HTML PAGE
       # =========================================================
 
       - name: Update quote board
         run: |
-
           python3 - <<'PY'
-
+          from pathlib import Path
           import json
           import re
-          from pathlib import Path
 
           page = Path(
               "Outlook Files/index.html"
           )
 
           selected = json.loads(
-              Path("/tmp/selected_quote.json")
-              .read_text(
+              Path(
+                  "/tmp/selected_quote.json"
+              ).read_text(
                   encoding="utf-8"
               )
           )
@@ -554,101 +709,168 @@ jobs:
               selected["used_at"]
           )
 
-          replacements = {
+          # -----------------------------------------------------
+          # Ensure automation constants exist.
+          # -----------------------------------------------------
 
-              "CURRENT_QUOTE":
-                  quote,
+          marker_block = f"""
+           <script>
+            const CURRENT_QUOTE = {quote};
+            const CURRENT_SOURCE = {source};
+            const CURRENT_QUOTE_ID = {quote_id};
+            const CURRENT_UPDATED_AT = {updated_at};
+          </script>
+          """
 
-              "CURRENT_SOURCE":
-                  source,
+          marker_pattern = (
+              r'\s*<script>\s*'
+              r'const CURRENT_QUOTE = .*?;'
+              r'\s*const CURRENT_SOURCE = .*?;'
+              r'\s*const CURRENT_QUOTE_ID = .*?;'
+              r'\s*const CURRENT_UPDATED_AT = .*?;'
+              r'\s*</script>'
+          )
 
-              "CURRENT_QUOTE_ID":
-                  quote_id,
-
-              "CURRENT_UPDATED_AT":
-                  updated_at
-          }
-
-          for key, value in replacements.items():
-
-              pattern = (
-                  rf'const {key} = .*?;'
+          if re.search(
+              marker_pattern,
+              html,
+              flags=re.DOTALL
+          ):
+              html = re.sub(
+                  marker_pattern,
+                  marker_block.strip(),
+                  html,
+                  count=1,
+                  flags=re.DOTALL
               )
+          else:
+              closing_body = "</body>"
 
-              if not re.search(
-                  pattern,
-                  html
-              ):
-
+              if closing_body not in html:
                   raise SystemExit(
-                      f"Missing HTML marker: {key}"
+                      "ERROR: </body> not found in index.html."
                   )
 
-              html = re.sub(
-                  pattern,
-                  f"const {key} = {value};",
-                  html,
-                  count=1
+              html = html.replace(
+                  closing_body,
+                  marker_block +
+                  "\n" +
+                  closing_body,
+                  1
               )
+
+          # -----------------------------------------------------
+          # Ensure page points to local quote database.
+          # -----------------------------------------------------
+
+          html = html.replace(
+              "../php_auth_system/data/daily_quotes.json",
+              "./daily_quotes.json"
+          )
 
           page.write_text(
               html,
               encoding="utf-8"
           )
 
+          print(
+              "Quote board updated."
+          )
+
+          print(
+              f"Quote ID: {selected['id']}"
+          )
+
+          print(
+              f"Updated at: {selected['used_at']}"
+          )
           PY
 
       # =========================================================
-      # 17. VALIDATE HTML CHANGE
+      # 21. VALIDATE HTML PAGE
       # =========================================================
 
       - name: Validate quote board
         run: |
+          python3 - <<'PY'
+          from pathlib import Path
 
-          grep -q "CURRENT_QUOTE" \
-            "Outlook Files/index.html"
+          page = Path(
+              "Outlook Files/index.html"
+          )
 
-          grep -q "CURRENT_SOURCE" \
-            "Outlook Files/index.html"
+          html = page.read_text(
+              encoding="utf-8"
+          )
 
-          grep -q "CURRENT_QUOTE_ID" \
-            "Outlook Files/index.html"
+          required = [
+              "CURRENT_QUOTE",
+              "CURRENT_SOURCE",
+              "CURRENT_QUOTE_ID",
+              "CURRENT_UPDATED_AT",
+              "Aviraj Salunkhe",
+              "github.com/avirajsalunkhe",
+              "./daily_quotes.json"
+          ]
 
-          grep -q "CURRENT_UPDATED_AT" \
-            "Outlook Files/index.html"
+          missing = [
+              item
+              for item in required
+              if item not in html
+          ]
 
-          echo "Quote board validation passed."
+          if missing:
+              raise SystemExit(
+                  "ERROR: Missing required HTML content: "
+                  + ", ".join(missing)
+              )
+
+          print(
+              "SUCCESS: Quote board validation passed."
+          )
+          PY
 
       # =========================================================
-      # 18. CREATE PR #2
+      # 22. PREPARE PR #2
       # =========================================================
 
       - name: Prepare PR 2
         run: |
-
           git add \
             "Outlook Files/index.html"
+
+          git diff --cached --quiet && {
+            echo "ERROR: No page changes detected."
+            exit 1
+          }
 
           git commit \
             -m "feat: update ClassCrew quote board"
 
           git push \
-            origin "$BRANCH"
+            origin "$PAGE_BRANCH"
+
+      # =========================================================
+      # 23. CREATE PR #2
+      # =========================================================
 
       - name: Create PR 2
         id: pr2
         env:
           GH_TOKEN: ${{ secrets.AVIRAJ_PAT }}
         run: |
-
           PR_URL=$(gh pr create \
             --repo "${{ github.repository }}" \
-            --head "$BRANCH" \
+            --head "$PAGE_BRANCH" \
             --base "$TARGET_BRANCH" \
             --title "feat: update ClassCrew quote board" \
             --body "## ClassCrew Quote Board
 
           Updates Outlook Files/index.html with the newly verified quote.
+
+          ### Selected Quote
+
+          Quote ID: ${SELECTED_QUOTE_ID}
 
           ### Included
 
@@ -657,7 +879,8 @@ jobs:
           - Updated timestamp
           - Admin attribution
           - GitHub profile link
-          - Existing 12-hour countdown
+          - 12-hour quote cycle
+          - Local daily_quotes.json path
 
           Related issue:
           $ISSUE2_URL")
@@ -665,64 +888,69 @@ jobs:
           echo "PR2_URL=$PR_URL" >> "$GITHUB_ENV"
 
       # =========================================================
-      # 19. COMMENT PR #2
+      # 24. COMMENT PR #2
       # =========================================================
 
       - name: Comment PR 2
         env:
           GH_TOKEN: ${{ secrets.AVIRAJ_PAT }}
         run: |
-
           gh pr comment "$PR2_URL" \
             --repo "${{ github.repository }}" \
             --body "Quote board verification passed.
+
+          Quote ID: ${SELECTED_QUOTE_ID}
 
           The page now references the verified quote selected by the automation.
 
           Waiting 20 seconds before merge."
 
       # =========================================================
-      # 20. WAIT 20 SECONDS
+      # 25. WAIT 20 SECONDS
       # =========================================================
 
       - name: Wait before PR 2 merge
-        run: sleep 20
+        run: |
+          sleep 20
 
       # =========================================================
-      # 21. MERGE PR #2
+      # 26. MERGE PR #2
       # =========================================================
 
       - name: Merge PR 2
         env:
           GH_TOKEN: ${{ secrets.AVIRAJ_PAT }}
         run: |
-
           gh pr merge "$PR2_URL" \
             --merge \
             --delete-branch=false
 
       # =========================================================
-      # 22. FINAL SUMMARY
+      # 27. FINAL SUMMARY
       # =========================================================
 
       - name: Execution summary
         run: |
-
           echo "=========================================="
           echo "CLASSCREW QUOTE AUTOMATION COMPLETE"
           echo "=========================================="
           echo ""
           echo "Execution: #${{ github.run_number }}"
           echo ""
-          echo "Issues created:       2"
-          echo "Issue comments:       2"
-          echo "Pull requests:        2"
-          echo "PR comments:          2"
-          echo "PR merges:            2"
+          echo "Selected quote:      ${SELECTED_QUOTE_ID}"
           echo ""
-          echo "Quote rotation:       Every 12 hours"
-          echo "Duplicate checking:   ENABLED"
-          echo "Quote history:        ENABLED"
-          echo "Admin:                Aviraj Salunkhe"
+          echo "Issues created:      2"
+          echo "Issue comments:      2"
+          echo "Pull requests:       2"
+          echo "PR comments:         2"
+          echo "PR merges:           2"
+          echo ""
+          echo "Quote rotation:      Every 12 hours"
+          echo "Duplicate checking:  ENABLED"
+          echo "Quote history:       ENABLED"
+          echo "Pages deployment:    ENABLED"
+          echo ""
+          echo "Admin:               Aviraj Salunkhe"
+          echo "GitHub:              https://github.com/avirajsalunkhe"
           echo ""
           echo "=========================================="
