@@ -17,9 +17,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-
   deploy:
-
     runs-on: ubuntu-latest
 
     environment:
@@ -28,7 +26,7 @@ jobs:
 
     steps:
 
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Configure GitHub Pages
@@ -36,18 +34,14 @@ jobs:
 
       - name: Prepare website
         run: |
+          mkdir -p "_site/Outlook Files"
 
-          mkdir -p _site
+          # Copy the existing webpage
+          cp "Outlook Files/index.html" "_site/Outlook Files/index.html"
 
-          # Copy your existing page
-          cp -r "Outlook Files" "_site/"
-
-          # Copy quote database
-          mkdir -p "_site/php_auth_system/data"
-
-          cp \
-            "php_auth_system/data/daily_quotes.json" \
-            "_site/php_auth_system/data/daily_quotes.json"
+          # Put the quote database beside index.html
+          cp "php_auth_system/data/daily_quotes.json" \
+             "_site/Outlook Files/daily_quotes.json"
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
