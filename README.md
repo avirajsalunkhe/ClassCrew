@@ -1,8 +1,22 @@
-
-
 ---
 
 # 🎓 ClassCrew- Digital Coaching DFS Platform
+
+![ClassCrew Landing Page](assets/classcrew-landing.png)
+
+<p align="center"><em>ClassCrew landing page, live at <a href="https://avirajsalunkhe.github.io/ClassCrew/">avirajsalunkhe.github.io/ClassCrew</a></em></p>
+
+### 🖼 About the Landing Page
+
+The ClassCrew landing page is an interactive, classroom-themed welcome screen built around a wooden-framed **blackboard**, giving the platform a warm, familiar identity before users reach the application itself.
+
+* **Blackboard header:** The board carries the school name in Marathi (जिल्हा परिषद प्राथमिक शाळा, रिंगोड वस्ती, रोपळे बु.), tying the project to its real-world, community-school roots.
+* **Today's Thought:** A chalk-written motivational quote is displayed in a dashed chalk frame and attributed to *ClassCrew*. The board shows an **Updated** timestamp and a live **Next thought in** countdown, so the quote refreshes automatically on a timed cycle.
+* **Interactive chalkboard:** Visitors can pick a chalk colour (white, yellow, pink, blue) or the duster from the tray, then hold and drag on the blackboard to draw or erase. A **Reset board** button restores the original board.
+* **Hanging photo frames:** Two framed cards hang from the board. The left one links to the author's **LeetCode** profile and the right one to the author's **GitHub** profile (Aviraj Salunkhe).
+* **Visual design:** A cream wall, a terracotta stripe and a teal wainscot surround a wooden-framed board, with a chalk-style handwritten font and the tagline *Knowledge · Practice · Growth* along the bottom edge.
+
+---
 
 ![PHP](https://img.shields.io/badge/PHP-8.x-777BB4?logo=php\&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-8.x-4479A1?logo=mysql\&logoColor=white)
