@@ -1,8 +1,643 @@
-<html>
-  <head>
-    
-  </head>
-  <body>
-    
-  </body>
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ClassCrew | Daily Thought Board</title>
+
+    <meta
+        name="description"
+        content="ClassCrew daily thought board with a new learning quote every 12 hours."
+    >
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --wood-1: #6e472c;
+            --wood-2: #3f2819;
+            --board-1: #18231d;
+            --board-2: #0d1411;
+            --chalk: #f4f0df;
+            --chalk-soft: rgba(244, 240, 223, 0.68);
+            --line: rgba(255, 255, 255, 0.12);
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 28px;
+            color: var(--chalk);
+            font-family:
+                Inter,
+                ui-sans-serif,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            background:
+                radial-gradient(circle at top left, rgba(255,255,255,.08), transparent 30%),
+                radial-gradient(circle at bottom right, rgba(0,0,0,.35), transparent 35%),
+                linear-gradient(135deg, #171b1a, #080b0a);
+        }
+
+        .page {
+            width: min(1100px, 100%);
+        }
+
+        .heading {
+            text-align: center;
+            margin-bottom: 18px;
+        }
+
+        .heading .eyebrow {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.28em;
+            color: rgba(255,255,255,.56);
+            margin-bottom: 7px;
+        }
+
+        .heading h1 {
+            font-size: clamp(1.5rem, 3vw, 2.4rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+        }
+
+        .heading p {
+            margin-top: 7px;
+            color: rgba(255,255,255,.58);
+            font-size: 0.92rem;
+        }
+
+        .board-frame {
+            position: relative;
+            padding: 18px;
+            border-radius: 18px;
+
+            background:
+                linear-gradient(145deg, rgba(255,255,255,.07), transparent 28%),
+                linear-gradient(135deg, var(--wood-1), var(--wood-2));
+
+            box-shadow:
+                0 30px 80px rgba(0,0,0,.42),
+                inset 0 0 0 2px rgba(255,255,255,.08),
+                inset 0 0 22px rgba(0,0,0,.35);
+        }
+
+        .board {
+            position: relative;
+            overflow: hidden;
+            min-height: 590px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border-radius: 9px;
+            padding: clamp(26px, 5vw, 58px);
+
+            background:
+                radial-gradient(circle at 15% 18%, rgba(255,255,255,.04), transparent 16%),
+                radial-gradient(circle at 83% 76%, rgba(255,255,255,.025), transparent 18%),
+                linear-gradient(160deg, var(--board-1), var(--board-2));
+
+            box-shadow:
+                inset 0 0 70px rgba(0,0,0,.45),
+                inset 0 0 0 1px rgba(255,255,255,.05);
+        }
+
+        /* Chalk dust */
+        .board::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            opacity: .18;
+            pointer-events: none;
+
+            background-image:
+                radial-gradient(circle, rgba(255,255,255,.2) 0 1px, transparent 1px),
+                radial-gradient(circle, rgba(255,255,255,.12) 0 1px, transparent 1px);
+
+            background-size: 37px 41px, 63px 55px;
+            background-position: 12px 20px, 31px 11px;
+        }
+
+        .board-top {
+            position: relative;
+            z-index: 1;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .school-label {
+            font-family: "Trebuchet MS", sans-serif;
+            font-size: .86rem;
+            text-transform: uppercase;
+            letter-spacing: .18em;
+            color: var(--chalk-soft);
+        }
+
+        .status {
+            border: 1px solid rgba(255,255,255,.16);
+            padding: 7px 12px;
+            border-radius: 999px;
+            background: rgba(0,0,0,.18);
+            font-size: .75rem;
+            color: rgba(255,255,255,.72);
+            white-space: nowrap;
+        }
+
+        .quote-area {
+            position: relative;
+            z-index: 1;
+            max-width: 850px;
+            margin: 50px auto;
+            width: 100%;
+            text-align: center;
+        }
+
+        .quote-mark {
+            display: block;
+            font-family: Georgia, serif;
+            font-size: 7rem;
+            line-height: .6;
+            color: rgba(255,255,255,.13);
+            user-select: none;
+        }
+
+        .quote {
+            margin-top: 20px;
+            font-family:
+                "Comic Sans MS",
+                "Segoe Print",
+                "Bradley Hand",
+                cursive;
+
+            font-size: clamp(1.8rem, 4.6vw, 3.9rem);
+            line-height: 1.3;
+            letter-spacing: .01em;
+            color: var(--chalk);
+
+            text-shadow:
+                0 0 1px rgba(255,255,255,.9),
+                1px 1px 0 rgba(255,255,255,.08);
+
+            transition:
+                opacity .45s ease,
+                transform .45s ease;
+        }
+
+        .quote.fade-out {
+            opacity: 0;
+            transform: translateY(8px);
+        }
+
+        .author {
+            margin-top: 24px;
+            font-family: "Segoe Print", cursive;
+            font-size: 1rem;
+            color: rgba(255,255,255,.66);
+        }
+
+        .author a {
+            color: #fff;
+            text-decoration: none;
+            border-bottom: 1px dashed rgba(255,255,255,.5);
+        }
+
+        .author a:hover {
+            border-bottom-color: #fff;
+        }
+
+        .divider {
+            width: min(450px, 70%);
+            height: 1px;
+            margin: 28px auto;
+            background: linear-gradient(
+                to right,
+                transparent,
+                rgba(255,255,255,.38),
+                transparent
+            );
+        }
+
+        .meta-grid {
+            position: relative;
+            z-index: 1;
+
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            max-width: 780px;
+            margin: 0 auto;
+        }
+
+        .meta-card {
+            padding: 15px 12px;
+            text-align: center;
+            border: 1px dashed rgba(255,255,255,.16);
+            border-radius: 10px;
+            background: rgba(0,0,0,.13);
+        }
+
+        .meta-label {
+            display: block;
+            font-size: .68rem;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,.44);
+            margin-bottom: 6px;
+        }
+
+        .meta-value {
+            font-family: "Segoe Print", cursive;
+            font-size: .92rem;
+            color: rgba(255,255,255,.86);
+        }
+
+        .countdown {
+            font-variant-numeric: tabular-nums;
+        }
+
+        .board-bottom {
+            position: relative;
+            z-index: 1;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            margin-top: 32px;
+        }
+
+        .quote-counter {
+            font-family: "Segoe Print", cursive;
+            color: rgba(255,255,255,.52);
+            font-size: .86rem;
+        }
+
+        .progress-wrap {
+            flex: 1;
+            max-width: 420px;
+        }
+
+        .progress {
+            height: 4px;
+            width: 100%;
+            border-radius: 999px;
+            overflow: hidden;
+            background: rgba(255,255,255,.1);
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: rgba(255,255,255,.7);
+            transition: width .5s ease;
+        }
+
+        .footer-note {
+            margin-top: 16px;
+            text-align: center;
+            color: rgba(255,255,255,.4);
+            font-size: .72rem;
+        }
+
+        @media (max-width: 720px) {
+            body {
+                padding: 14px;
+            }
+
+            .board-frame {
+                padding: 10px;
+            }
+
+            .board {
+                min-height: 680px;
+                padding: 24px 18px;
+            }
+
+            .board-top {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .status {
+                font-size: .68rem;
+            }
+
+            .quote-area {
+                margin: 42px auto;
+            }
+
+            .quote-mark {
+                font-size: 5rem;
+            }
+
+            .meta-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .board-bottom {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .progress-wrap {
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<main class="page">
+
+    <header class="heading">
+        <div class="eyebrow">ClassCrew • Learning Board</div>
+        <h1>Today's Thought</h1>
+        <p>A new thought is placed on the board every 12 hours.</p>
+    </header>
+
+    <section class="board-frame">
+
+        <div class="board">
+
+            <div class="board-top">
+                <div class="school-label">✦ Knowledge • Practice • Growth</div>
+                <div class="status">● LIVE BOARD</div>
+            </div>
+
+            <section class="quote-area">
+
+                <span class="quote-mark">“</span>
+
+                <div
+                    id="quote"
+                    class="quote"
+                    aria-live="polite"
+                ></div>
+
+                <div
+                    id="author"
+                    class="author"
+                ></div>
+
+                <div class="divider"></div>
+
+                <div class="meta-grid">
+
+                    <div class="meta-card">
+                        <span class="meta-label">Updated At</span>
+                        <span
+                            id="updatedAt"
+                            class="meta-value"
+                        ></span>
+                    </div>
+
+                    <div class="meta-card">
+                        <span class="meta-label">Next Quote In</span>
+                        <span
+                            id="countdown"
+                            class="meta-value countdown"
+                        ></span>
+                    </div>
+
+                    <div class="meta-card">
+                        <span class="meta-label">Cycle</span>
+                        <span
+                            id="cycleTime"
+                            class="meta-value"
+                        ></span>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <div class="board-bottom">
+
+                <div
+                    id="quoteCounter"
+                    class="quote-counter"
+                ></div>
+
+                <div class="progress-wrap">
+                    <div class="progress">
+                        <div
+                            id="progressBar"
+                            class="progress-bar"
+                        ></div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <div class="footer-note">
+        Curated and maintained by
+        <a
+            href="https://github.com/avirajsalunkhe"
+            target="_blank"
+            rel="noopener noreferrer"
+            style="color:inherit;"
+        >
+            Aviraj Salunkhe
+        </a>
+    </div>
+
+</main>
+
+<script>
+    /*
+     * Local quote collection.
+     * Keeping quotes in the page means the board works without
+     * an external API or network dependency.
+     */
+    const quotes = [
+        "Small progress becomes powerful when you repeat it consistently.",
+        "Learn the concept, understand the reason, then write the code.",
+        "A difficult problem becomes smaller when you divide it into logical steps.",
+        "Consistency beats intensity when the goal is long-term growth.",
+        "Your next breakthrough may be hidden inside the problem you keep avoiding.",
+        "Good code solves today's problem; great code also respects tomorrow's changes.",
+        "Understanding why something works is more valuable than memorizing how it works.",
+        "Every bug is an opportunity to understand your system better.",
+        "Build slowly enough to understand, and quickly enough to keep learning.",
+        "The strongest developers are curious before they are confident.",
+        "A clean solution usually starts with a clear understanding of the problem.",
+        "Practice turns unfamiliar syntax into familiar thinking.",
+        "Don't fear the error; understand what the error is teaching you.",
+        "The best way to learn a technology is to build something meaningful with it.",
+        "Strong fundamentals make new frameworks easier to understand.",
+        "One solved problem is evidence that the next problem is possible.",
+        "Progress is often invisible until you compare yourself with where you started.",
+        "Readable code is a form of communication.",
+        "The best debugging tool is often a better question.",
+        "Don't measure learning by hours spent; measure it by problems understood.",
+        "A strong foundation makes complex systems less intimidating.",
+        "Every commit should move the project toward something clearer or better.",
+        "The ability to simplify complexity is a technical skill.",
+        "A failed approach is still useful when you understand why it failed.",
+        "Good software is built through decisions, not just code.",
+        "Learning to read code is as important as learning to write it.",
+        "The more clearly you understand a system, the fewer assumptions you need.",
+        "Don't chase every new technology; master the principles behind them.",
+        "A useful project is a classroom that never closes.",
+        "The best developers remain students even after becoming experts.",
+        "A difficult concept becomes easier when you explain it in your own words.",
+        "Good questions often save more time than fast typing.",
+        "The goal is not to write more code; it is to create more value.",
+        "Reliable software starts with reliable assumptions.",
+        "A small improvement repeated every day can transform a project.",
+        "Your debugging process should teach you how the system behaves.",
+        "Good developers don't memorize every answer; they know how to find the right one.",
+        "The best code review improves both the code and the developer.",
+        "Software engineering is the discipline of turning complexity into understandable systems.",
+        "Every feature is a decision about what users actually need.",
+        "Strong systems are designed for change because change is inevitable.",
+        "The quality of a solution depends on the quality of the problem definition.",
+        "Learn the fundamentals deeply and the tools become easier to replace.",
+        "A developer's strongest advantage is the ability to keep learning.",
+        "When you can explain a solution simply, you probably understand it well.",
+        "Build something, break something, understand it, and build it better.",
+        "Progress comes from turning uncertainty into small experiments.",
+        "Technology rewards people who combine curiosity with consistency.",
+        "The most valuable feature is often the one that makes the user's problem simpler.",
+        "Keep learning, keep building, and let your projects prove your growth."
+    ];
+
+    const CYCLE_MS = 12 * 60 * 60 * 1000;
+
+    const quoteElement = document.getElementById("quote");
+    const authorElement = document.getElementById("author");
+    const updatedAtElement = document.getElementById("updatedAt");
+    const countdownElement = document.getElementById("countdown");
+    const cycleTimeElement = document.getElementById("cycleTime");
+    const quoteCounterElement = document.getElementById("quoteCounter");
+    const progressBarElement = document.getElementById("progressBar");
+
+    let currentIndex = -1;
+
+    function getCycleStart(now = new Date()) {
+        const time = now.getTime();
+        return Math.floor(time / CYCLE_MS) * CYCLE_MS;
+    }
+
+    function getCycleIndex(now = new Date()) {
+        const cycle = Math.floor(now.getTime() / CYCLE_MS);
+        return cycle % quotes.length;
+    }
+
+    function formatDateTime(timestamp) {
+        return new Intl.DateTimeFormat(undefined, {
+            dateStyle: "medium",
+            timeStyle: "short"
+        }).format(new Date(timestamp));
+    }
+
+    function pad(value) {
+        return String(value).padStart(2, "0");
+    }
+
+    function formatCountdown(ms) {
+        const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+
+        return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+    }
+
+    function getCycleLabel(cycleStart) {
+        const nextCycle = cycleStart + CYCLE_MS;
+        return `${formatDateTime(cycleStart)} → ${formatDateTime(nextCycle)}`;
+    }
+
+    function updateQuote(force = false) {
+        const now = new Date();
+
+        const index = getCycleIndex(now);
+
+        if (!force && index === currentIndex) {
+            return;
+        }
+
+        currentIndex = index;
+
+        quoteElement.classList.add("fade-out");
+
+        setTimeout(() => {
+            quoteElement.textContent = quotes[index];
+
+            authorElement.innerHTML =
+                '— Admin: <a href="https://github.com/avirajsalunkhe" target="_blank" rel="noopener noreferrer">Aviraj Salunkhe</a>';
+
+            quoteElement.classList.remove("fade-out");
+        }, 180);
+
+        const cycleStart = getCycleStart(now);
+
+        updatedAtElement.textContent = formatDateTime(cycleStart);
+        cycleTimeElement.textContent = getCycleLabel(cycleStart);
+        quoteCounterElement.textContent =
+            `Quote ${index + 1} of ${quotes.length}`;
+
+        const progress = ((index + 1) / quotes.length) * 100;
+        progressBarElement.style.width = `${progress}%`;
+    }
+
+    function updateCountdown() {
+        const now = new Date();
+
+        const cycleStart = getCycleStart(now);
+        const nextUpdate = cycleStart + CYCLE_MS;
+
+        const remaining = nextUpdate - now.getTime();
+
+        countdownElement.textContent = formatCountdown(remaining);
+
+        if (remaining <= 0) {
+            updateQuote(true);
+        }
+    }
+
+    function startBoard() {
+        updateQuote(true);
+        updateCountdown();
+
+        setInterval(() => {
+            updateCountdown();
+        }, 1000);
+    }
+
+    document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) {
+            updateQuote();
+            updateCountdown();
+        }
+    });
+
+    startBoard();
+</script>
+
+</body>
 </html>
+```
