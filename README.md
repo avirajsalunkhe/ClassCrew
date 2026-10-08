@@ -1,5 +1,3 @@
----
-
 # 🎓 ClassCrew- Digital Coaching DFS Platform
 
 ![ClassCrew Landing Page](assets/classcrew-landing.png)
