@@ -1,0 +1,252 @@
+[
+  {
+    "id": "q001",
+    "quote": "Small progress becomes powerful when you repeat it consistently.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q002",
+    "quote": "Learn the concept, understand the reason, then write the code.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q003",
+    "quote": "A difficult problem becomes smaller when you divide it into logical steps.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q004",
+    "quote": "Consistency beats intensity when the goal is long-term growth.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q005",
+    "quote": "Your next breakthrough may be hidden inside the problem you keep avoiding.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q006",
+    "quote": "Good code solves today's problem; great code also respects tomorrow's changes.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q007",
+    "quote": "Understanding why something works is more valuable than memorizing how it works.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q008",
+    "quote": "Every bug is an opportunity to understand your system better.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q009",
+    "quote": "Build slowly enough to understand, and quickly enough to keep learning.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q010",
+    "quote": "The strongest developers are curious before they are confident.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q011",
+    "quote": "A clean solution usually starts with a clear understanding of the problem.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q012",
+    "quote": "Practice turns unfamiliar syntax into familiar thinking.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q013",
+    "quote": "Don't fear the error; understand what the error is teaching you.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q014",
+    "quote": "The best way to learn a technology is to build something meaningful with it.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q015",
+    "quote": "Strong fundamentals make new frameworks easier to understand.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q016",
+    "quote": "One solved problem is evidence that the next problem is possible.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q017",
+    "quote": "Progress is often invisible until you compare yourself with where you started.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q018",
+    "quote": "Readable code is a form of communication.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q019",
+    "quote": "The best debugging tool is often a better question.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q020",
+    "quote": "Don't measure learning by hours spent; measure it by problems understood.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q021",
+    "quote": "A strong foundation makes complex systems less intimidating.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q022",
+    "quote": "Every commit should move the project toward something clearer or better.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q023",
+    "quote": "The ability to simplify complexity is a technical skill.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q024",
+    "quote": "A failed approach is still useful when you understand why it failed.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q025",
+    "quote": "Good software is built through decisions, not just code.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q026",
+    "quote": "Learning to read code is as important as learning to write it.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q027",
+    "quote": "The more clearly you understand a system, the fewer assumptions you need.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q028",
+    "quote": "Don't chase every new technology; master the principles behind them.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q029",
+    "quote": "A useful project is a classroom that never closes.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q030",
+    "quote": "The best developers remain students even after becoming experts.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q031",
+    "quote": "A difficult concept becomes easier when you explain it in your own words.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q032",
+    "quote": "Good questions often save more time than fast typing.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q033",
+    "quote": "The goal is not to write more code; it is to create more value.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q034",
+    "quote": "Reliable software starts with reliable assumptions.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q035",
+    "quote": "A small improvement repeated every day can transform a project.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q036",
+    "quote": "Your debugging process should teach you how the system behaves.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q037",
+    "quote": "Good developers don't memorize every answer; they know how to find the right one.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q038",
+    "quote": "The best code review improves both the code and the developer.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q039",
+    "quote": "Software engineering is the discipline of turning complexity into understandable systems.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q040",
+    "quote": "Every feature is a decision about what users actually need.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q041",
+    "quote": "Strong systems are designed for change because change is inevitable.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q042",
+    "quote": "The quality of a solution depends on the quality of the problem definition.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q043",
+    "quote": "Learn the fundamentals deeply and the tools become easier to replace.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q044",
+    "quote": "A developer's strongest advantage is the ability to keep learning.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q045",
+    "quote": "When you can explain a solution simply, you probably understand it well.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q046",
+    "quote": "Build something, break something, understand it, and build it better.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q047",
+    "quote": "Progress comes from turning uncertainty into small experiments.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q048",
+    "quote": "Technology rewards people who combine curiosity with consistency.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q049",
+    "quote": "The most valuable feature is often the one that makes the user's problem simpler.",
+    "source": "ClassCrew"
+  },
+  {
+    "id": "q050",
+    "quote": "Keep learning, keep building, and let your projects prove your growth.",
+    "source": "ClassCrew"
+  }
+]
