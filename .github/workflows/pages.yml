@@ -13,8 +13,8 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
-  cancel-in-progress: false
+  group: github-pages
+  cancel-in-progress: true
 
 jobs:
 
@@ -28,37 +28,32 @@ jobs:
 
     steps:
 
-      # Checkout repository
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Configure GitHub Pages
-      - name: Setup Pages
+      - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
-      # Create Pages directory
       - name: Prepare website
         run: |
 
           mkdir -p _site
 
-          # Copy the complete static website
-          cp -r "Outlook Files" _site/
+          # Copy your existing page
+          cp -r "Outlook Files" "_site/"
 
-          # Copy quote data
+          # Copy quote database
           mkdir -p "_site/php_auth_system/data"
 
           cp \
             "php_auth_system/data/daily_quotes.json" \
             "_site/php_auth_system/data/daily_quotes.json"
 
-      # Upload website artifact
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: _site
+          path: "_site"
 
-      # Deploy
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
