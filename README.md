@@ -1,12 +1,12 @@
 # 🎓 ClassCrew- Digital Coaching DFS Platform
 
-![ClassCrew Landing Page](assets/classcrew-landing.png)
+![ClassCrew Daily Quotes Page](assets/classcrew-landing.png)
 
-<p align="center"><em>ClassCrew landing page, live at <a href="https://avirajsalunkhe.github.io/ClassCrew/">avirajsalunkhe.github.io/ClassCrew</a></em></p>
+<p align="center"><em>ClassCrew Daily Quotes page, live at <a href="https://avirajsalunkhe.github.io/ClassCrew/">avirajsalunkhe.github.io/ClassCrew</a></em></p>
 
-### 🖼 About the Landing Page
+### 🖼 About the Daily Quotes Page
 
-The ClassCrew landing page is an interactive, classroom-themed welcome screen built around a wooden-framed **blackboard**, giving the platform a warm, familiar identity before users reach the application itself.
+This is a simple standalone HTML page that displays a daily motivational quote ("Today's Thought") on an interactive, classroom-themed **blackboard**. It adds a warm, familiar identity to the ClassCrew project.
 
 * **Blackboard header:** The board carries the school name in Marathi (जिल्हा परिषद प्राथमिक शाळा, रिंगोड वस्ती, रोपळे बु.), tying the project to its real-world, community-school roots.
 * **Today's Thought:** A chalk-written motivational quote is displayed in a dashed chalk frame and attributed to *ClassCrew*. The board shows an **Updated** timestamp and a live **Next thought in** countdown, so the quote refreshes automatically on a timed cycle.
