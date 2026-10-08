@@ -464,7 +464,7 @@
 
 </main>
 <script>
-    const QUOTES_FILE = "../php_auth_system/data/daily_quotes.json";
+    const QUOTES_FILE = "./daily_quotes.json";
 
     const CYCLE_MS = 12 * 60 * 60 * 1000;
 
@@ -492,37 +492,39 @@
     let quotes = [];
     let currentIndex = -1;
 
-    async function loadQuotes() {
-        try {
-            const response =
-                await fetch(`${QUOTES_FILE}?v=${Date.now()}`);
 
-            if (!response.ok) {
-                throw new Error(
-                    `Unable to load quotes: ${response.status}`
-                );
-            }
 
-            quotes = await response.json();
+async function loadQuotes() {
+    try {
+        const response = await fetch(
+            `${QUOTES_FILE}?v=${Date.now()}`
+        );
 
-            if (!Array.isArray(quotes) || quotes.length === 0) {
-                throw new Error("Quote database is empty.");
-            }
-
-            updateBoard(true);
-            updateCountdown();
-
-        } catch (error) {
-
-            console.error(error);
-
-            quoteElement.textContent =
-                "Unable to load today's thought.";
-
-            authorElement.textContent =
-                "— ClassCrew";
+        if (!response.ok) {
+            throw new Error(
+                `Unable to load quotes: ${response.status}`
+            );
         }
+
+        quotes = await response.json();
+
+        if (!Array.isArray(quotes) || quotes.length === 0) {
+            throw new Error("Quote database is empty.");
+        }
+
+        updateBoard(true);
+        updateCountdown();
+
+    } catch (error) {
+        console.error("Quote loading failed:", error);
+
+        quoteElement.textContent =
+            "Unable to load today's thought.";
+
+        authorElement.innerHTML =
+            '— Admin: <a href="https://github.com/avirajsalunkhe" target="_blank" rel="noopener noreferrer">Aviraj Salunkhe</a>';
     }
+}
 
     function getCycleStart(now = new Date()) {
         return (
