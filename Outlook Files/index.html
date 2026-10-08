@@ -2,14 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>ClassCrew | Daily Thought Board</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <meta
         name="description"
-        content="ClassCrew daily thought board with a new learning quote every 12 hours."
+        content="ClassCrew - Daily learning thought board"
     >
+
+    <title>ClassCrew | Today's Thought</title>
 
     <style>
         * {
@@ -18,344 +22,415 @@
             padding: 0;
         }
 
-        :root {
-            --wood-1: #6e472c;
-            --wood-2: #3f2819;
-            --board-1: #18231d;
-            --board-2: #0d1411;
-            --chalk: #f4f0df;
-            --chalk-soft: rgba(244, 240, 223, 0.68);
-            --line: rgba(255, 255, 255, 0.12);
-        }
-
         body {
             min-height: 100vh;
+
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 28px;
-            color: var(--chalk);
+
+            padding: 25px;
+
+            background:
+                radial-gradient(
+                    circle at 20% 20%,
+                    rgba(255, 255, 255, 0.04),
+                    transparent 25%
+                ),
+                radial-gradient(
+                    circle at 80% 80%,
+                    rgba(255, 255, 255, 0.03),
+                    transparent 25%
+                ),
+                #111;
+
+            color: #eee;
+
             font-family:
-                Inter,
-                ui-sans-serif,
-                system-ui,
-                -apple-system,
-                BlinkMacSystemFont,
+                "Trebuchet MS",
                 "Segoe UI",
+                Arial,
                 sans-serif;
-
-            background:
-                radial-gradient(circle at top left, rgba(255,255,255,.08), transparent 30%),
-                radial-gradient(circle at bottom right, rgba(0,0,0,.35), transparent 35%),
-                linear-gradient(135deg, #171b1a, #080b0a);
-        }
-
-        .page {
-            width: min(1100px, 100%);
-        }
-
-        .heading {
-            text-align: center;
-            margin-bottom: 18px;
-        }
-
-        .heading .eyebrow {
-            font-size: 0.72rem;
-            text-transform: uppercase;
-            letter-spacing: 0.28em;
-            color: rgba(255,255,255,.56);
-            margin-bottom: 7px;
-        }
-
-        .heading h1 {
-            font-size: clamp(1.5rem, 3vw, 2.4rem);
-            font-weight: 800;
-            letter-spacing: -0.03em;
-        }
-
-        .heading p {
-            margin-top: 7px;
-            color: rgba(255,255,255,.58);
-            font-size: 0.92rem;
-        }
-
-        .board-frame {
-            position: relative;
-            padding: 18px;
-            border-radius: 18px;
-
-            background:
-                linear-gradient(145deg, rgba(255,255,255,.07), transparent 28%),
-                linear-gradient(135deg, var(--wood-1), var(--wood-2));
-
-            box-shadow:
-                0 30px 80px rgba(0,0,0,.42),
-                inset 0 0 0 2px rgba(255,255,255,.08),
-                inset 0 0 22px rgba(0,0,0,.35);
         }
 
         .board {
+            width: 100%;
+            max-width: 900px;
+
+            min-height: 600px;
+
             position: relative;
-            overflow: hidden;
-            min-height: 590px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            border-radius: 9px;
-            padding: clamp(26px, 5vw, 58px);
+
+            padding: 45px 50px;
 
             background:
-                radial-gradient(circle at 15% 18%, rgba(255,255,255,.04), transparent 16%),
-                radial-gradient(circle at 83% 76%, rgba(255,255,255,.025), transparent 18%),
-                linear-gradient(160deg, var(--board-1), var(--board-2));
+                linear-gradient(
+                    rgba(255,255,255,0.015) 1px,
+                    transparent 1px
+                ),
+                linear-gradient(
+                    90deg,
+                    rgba(255,255,255,0.012) 1px,
+                    transparent 1px
+                ),
+                #202020;
+
+            background-size: 8px 8px;
+
+            border: 12px solid #5a3923;
+
+            border-radius: 8px;
 
             box-shadow:
-                inset 0 0 70px rgba(0,0,0,.45),
-                inset 0 0 0 1px rgba(255,255,255,.05);
+                0 25px 60px rgba(0,0,0,0.65),
+                inset 0 0 45px rgba(0,0,0,0.45);
+
+            overflow: hidden;
         }
 
-        /* Chalk dust */
         .board::before {
             content: "";
+
             position: absolute;
-            inset: 0;
-            opacity: .18;
+
+            inset: 10px;
+
+            border: 2px solid rgba(255,255,255,0.04);
+
             pointer-events: none;
-
-            background-image:
-                radial-gradient(circle, rgba(255,255,255,.2) 0 1px, transparent 1px),
-                radial-gradient(circle, rgba(255,255,255,.12) 0 1px, transparent 1px);
-
-            background-size: 37px 41px, 63px 55px;
-            background-position: 12px 20px, 31px 11px;
         }
 
-        .board-top {
-            position: relative;
-            z-index: 1;
-
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-        }
-
-        .school-label {
-            font-family: "Trebuchet MS", sans-serif;
-            font-size: .86rem;
-            text-transform: uppercase;
-            letter-spacing: .18em;
-            color: var(--chalk-soft);
-        }
-
-        .status {
-            border: 1px solid rgba(255,255,255,.16);
-            padding: 7px 12px;
-            border-radius: 999px;
-            background: rgba(0,0,0,.18);
-            font-size: .75rem;
-            color: rgba(255,255,255,.72);
-            white-space: nowrap;
-        }
-
-        .quote-area {
-            position: relative;
-            z-index: 1;
-            max-width: 850px;
-            margin: 50px auto;
-            width: 100%;
+        .top-label {
             text-align: center;
+
+            font-size: 14px;
+
+            letter-spacing: 5px;
+
+            text-transform: uppercase;
+
+            color: #aaa;
+
+            margin-bottom: 15px;
         }
 
-        .quote-mark {
-            display: block;
-            font-family: Georgia, serif;
-            font-size: 7rem;
-            line-height: .6;
-            color: rgba(255,255,255,.13);
-            user-select: none;
-        }
+        h1 {
+            text-align: center;
 
-        .quote {
-            margin-top: 20px;
             font-family:
                 "Comic Sans MS",
-                "Segoe Print",
-                "Bradley Hand",
+                "Trebuchet MS",
                 cursive;
 
-            font-size: clamp(1.8rem, 4.6vw, 3.9rem);
-            line-height: 1.3;
-            letter-spacing: .01em;
-            color: var(--chalk);
+            font-size: clamp(36px, 6vw, 64px);
+
+            font-weight: 700;
+
+            color: #f2f2f2;
 
             text-shadow:
-                0 0 1px rgba(255,255,255,.9),
-                1px 1px 0 rgba(255,255,255,.08);
+                2px 2px 0 rgba(255,255,255,0.05),
+                0 0 8px rgba(255,255,255,0.08);
 
-            transition:
-                opacity .45s ease,
-                transform .45s ease;
+            margin-bottom: 10px;
         }
 
-        .quote.fade-out {
-            opacity: 0;
-            transform: translateY(8px);
-        }
+        .subtitle {
+            text-align: center;
 
-        .author {
-            margin-top: 24px;
-            font-family: "Segoe Print", cursive;
-            font-size: 1rem;
-            color: rgba(255,255,255,.66);
-        }
+            color: #aaa;
 
-        .author a {
-            color: #fff;
-            text-decoration: none;
-            border-bottom: 1px dashed rgba(255,255,255,.5);
-        }
+            font-size: 15px;
 
-        .author a:hover {
-            border-bottom-color: #fff;
+            margin-bottom: 35px;
         }
 
         .divider {
-            width: min(450px, 70%);
-            height: 1px;
-            margin: 28px auto;
-            background: linear-gradient(
-                to right,
-                transparent,
-                rgba(255,255,255,.38),
-                transparent
-            );
+            width: 80%;
+
+            height: 2px;
+
+            margin: 0 auto 40px;
+
+            background:
+                linear-gradient(
+                    to right,
+                    transparent,
+                    rgba(255,255,255,0.45),
+                    transparent
+                );
         }
 
-        .meta-grid {
-            position: relative;
-            z-index: 1;
-
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            max-width: 780px;
-            margin: 0 auto;
-        }
-
-        .meta-card {
-            padding: 15px 12px;
+        .thought-label {
             text-align: center;
-            border: 1px dashed rgba(255,255,255,.16);
-            border-radius: 10px;
-            background: rgba(0,0,0,.13);
+
+            font-family:
+                "Comic Sans MS",
+                "Trebuchet MS",
+                cursive;
+
+            font-size: 18px;
+
+            color: #bbb;
+
+            letter-spacing: 2px;
+
+            margin-bottom: 25px;
         }
 
-        .meta-label {
-            display: block;
-            font-size: .68rem;
-            letter-spacing: .14em;
-            text-transform: uppercase;
-            color: rgba(255,255,255,.44);
-            margin-bottom: 6px;
-        }
-
-        .meta-value {
-            font-family: "Segoe Print", cursive;
-            font-size: .92rem;
-            color: rgba(255,255,255,.86);
-        }
-
-        .countdown {
-            font-variant-numeric: tabular-nums;
-        }
-
-        .board-bottom {
-            position: relative;
-            z-index: 1;
+        .quote-area {
+            min-height: 180px;
 
             display: flex;
+
+            justify-content: center;
+
             align-items: center;
-            justify-content: space-between;
-            gap: 18px;
-            margin-top: 32px;
+
+            text-align: center;
+
+            padding: 20px;
         }
 
-        .quote-counter {
-            font-family: "Segoe Print", cursive;
-            color: rgba(255,255,255,.52);
-            font-size: .86rem;
+        #quote {
+            max-width: 760px;
+
+            font-family:
+                "Comic Sans MS",
+                "Trebuchet MS",
+                cursive;
+
+            font-size: clamp(25px, 4vw, 42px);
+
+            line-height: 1.5;
+
+            color: #f5f5f5;
+
+            text-shadow:
+                0 0 5px rgba(255,255,255,0.15);
+
+            transition:
+                opacity 0.4s ease,
+                transform 0.4s ease;
         }
 
-        .progress-wrap {
-            flex: 1;
-            max-width: 420px;
+        #source {
+            margin-top: 25px;
+
+            text-align: center;
+
+            font-family:
+                "Comic Sans MS",
+                cursive;
+
+            font-size: 16px;
+
+            color: #aaa;
         }
 
-        .progress {
-            height: 4px;
+        .live-board {
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            gap: 8px;
+
+            margin-top: 30px;
+
+            font-size: 12px;
+
+            letter-spacing: 3px;
+
+            color: #aaa;
+        }
+
+        .live-dot {
+            width: 9px;
+            height: 9px;
+
+            border-radius: 50%;
+
+            background: #ddd;
+
+            box-shadow:
+                0 0 8px rgba(255,255,255,0.7);
+        }
+
+        .info-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 15px;
+
+            margin-top: 40px;
+        }
+
+        .info-card {
+            padding: 18px 12px;
+
+            text-align: center;
+
+            border-top:
+                1px solid rgba(255,255,255,0.15);
+
+            border-bottom:
+                1px solid rgba(255,255,255,0.08);
+        }
+
+        .info-title {
+            font-size: 11px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 2px;
+
+            color: #888;
+
+            margin-bottom: 8px;
+        }
+
+        .info-value {
+            font-family:
+                "Courier New",
+                monospace;
+
+            font-size: 14px;
+
+            color: #ddd;
+        }
+
+        .progress-container {
             width: 100%;
-            border-radius: 999px;
-            overflow: hidden;
-            background: rgba(255,255,255,.1);
+
+            margin-top: 30px;
         }
 
         .progress-bar {
-            width: 0%;
+            width: 100%;
+
+            height: 5px;
+
+            background: #333;
+
+            border-radius: 10px;
+
+            overflow: hidden;
+        }
+
+        #progress {
             height: 100%;
-            background: rgba(255,255,255,.7);
-            transition: width .5s ease;
+
+            width: 0%;
+
+            background: #ddd;
+
+            transition:
+                width 1s linear;
         }
 
-        .footer-note {
-            margin-top: 16px;
+        .progress-text {
+            margin-top: 8px;
+
             text-align: center;
-            color: rgba(255,255,255,.4);
-            font-size: .72rem;
+
+            font-size: 11px;
+
+            color: #777;
+
+            letter-spacing: 1px;
         }
 
-        @media (max-width: 720px) {
-            body {
-                padding: 14px;
-            }
+        .footer {
+            margin-top: 40px;
 
-            .board-frame {
+            padding-top: 20px;
+
+            border-top:
+                1px solid rgba(255,255,255,0.08);
+
+            text-align: center;
+
+            font-size: 12px;
+
+            color: #777;
+
+            line-height: 1.8;
+        }
+
+        .footer a {
+            color: #bbb;
+
+            text-decoration: none;
+
+            border-bottom:
+                1px dotted #777;
+
+            transition:
+                color 0.2s ease;
+        }
+
+        .footer a:hover {
+            color: white;
+        }
+
+        .quote-id {
+            margin-top: 7px;
+
+            font-family:
+                "Courier New",
+                monospace;
+
+            font-size: 10px;
+
+            color: #555;
+        }
+
+        @media (max-width: 700px) {
+
+            body {
                 padding: 10px;
             }
 
             .board {
-                min-height: 680px;
-                padding: 24px 18px;
+                padding: 30px 20px;
+
+                border-width: 8px;
+
+                min-height: auto;
             }
 
-            .board-top {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .status {
-                font-size: .68rem;
+            .divider {
+                width: 95%;
             }
 
             .quote-area {
-                margin: 42px auto;
+                min-height: 220px;
+
+                padding: 10px;
             }
 
-            .quote-mark {
-                font-size: 5rem;
+            #quote {
+                font-size: 27px;
+
+                line-height: 1.45;
             }
 
-            .meta-grid {
+            .info-grid {
                 grid-template-columns: 1fr;
+
+                gap: 0;
             }
 
-            .board-bottom {
-                flex-direction: column;
-                align-items: stretch;
+            .info-card {
+                padding: 14px;
             }
 
-            .progress-wrap {
-                max-width: none;
+            .footer {
+                margin-top: 30px;
             }
         }
     </style>
@@ -363,115 +438,209 @@
 
 <body>
 
-<main class="page">
+<div class="board">
 
-    <header class="heading">
-        <div class="eyebrow">ClassCrew • Learning Board</div>
-        <h1>Today's Thought</h1>
-        <p>A new thought is placed on the board every 12 hours.</p>
-    </header>
+    <!-- HEADER -->
 
-    <section class="board-frame">
+    <div class="top-label">
+        ClassCrew
+    </div>
 
-        <div class="board">
+    <h1>
+        Today's Thought
+    </h1>
 
-            <div class="board-top">
-                <div class="school-label">✦ Knowledge • Practice • Growth</div>
-                <div class="status">● LIVE BOARD</div>
+    <div class="subtitle">
+        A new thought is placed on the board every 12 hours.
+    </div>
+
+    <div class="divider"></div>
+
+
+    <!-- QUOTE -->
+
+    <div class="thought-label">
+        ✦ THOUGHT OF THE MOMENT ✦
+    </div>
+
+    <div class="quote-area">
+
+        <div>
+            <div id="quote">
+                Loading today's thought...
             </div>
 
-            <section class="quote-area">
+            <div id="source">
+                — ClassCrew
+            </div>
+        </div>
 
-                <span class="quote-mark">“</span>
+    </div>
 
-                <div
-                    id="quote"
-                    class="quote"
-                    aria-live="polite"
-                ></div>
 
-                <div
-                    id="author"
-                    class="author"
-                ></div>
+    <!-- LIVE STATUS -->
 
-                <div class="divider"></div>
+    <div class="live-board">
 
-                <div class="meta-grid">
+        <span class="live-dot"></span>
 
-                    <div class="meta-card">
-                        <span class="meta-label">Updated At</span>
-                        <span
-                            id="updatedAt"
-                            class="meta-value"
-                        ></span>
-                    </div>
+        <span>
+            LIVE BOARD
+        </span>
 
-                    <div class="meta-card">
-                        <span class="meta-label">Next Quote In</span>
-                        <span
-                            id="countdown"
-                            class="meta-value countdown"
-                        ></span>
-                    </div>
+    </div>
 
-                    <div class="meta-card">
-                        <span class="meta-label">Cycle</span>
-                        <span
-                            id="cycleTime"
-                            class="meta-value"
-                        ></span>
-                    </div>
 
-                </div>
+    <!-- INFORMATION -->
 
-            </section>
+    <div class="info-grid">
 
-            <div class="board-bottom">
+        <div class="info-card">
 
-                <div
-                    id="quoteCounter"
-                    class="quote-counter"
-                ></div>
+            <div class="info-title">
+                Updated At
+            </div>
 
-                <div class="progress-wrap">
-                    <div class="progress">
-                        <div
-                            id="progressBar"
-                            class="progress-bar"
-                        ></div>
-                    </div>
-                </div>
-
+            <div
+                class="info-value"
+                id="updatedAt"
+            >
+                Loading...
             </div>
 
         </div>
 
-    </section>
 
-    <div class="footer-note">
-        Curated and maintained by
+        <div class="info-card">
+
+            <div class="info-title">
+                Next Quote In
+            </div>
+
+            <div
+                class="info-value"
+                id="countdown"
+            >
+                12:00:00
+            </div>
+
+        </div>
+
+
+        <div class="info-card">
+
+            <div class="info-title">
+                Cycle
+            </div>
+
+            <div
+                class="info-value"
+                id="cycle"
+            >
+                12 Hours
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- PROGRESS -->
+
+    <div class="progress-container">
+
+        <div class="progress-bar">
+
+            <div
+                id="progress"
+            ></div>
+
+        </div>
+
+        <div
+            class="progress-text"
+            id="progressText"
+        >
+            Quote cycle
+        </div>
+
+    </div>
+
+
+    <!-- FOOTER -->
+
+    <div class="footer">
+
+        Knowledge • Practice • Growth
+
+        <br>
+
+        Admin:
         <a
             href="https://github.com/avirajsalunkhe"
             target="_blank"
             rel="noopener noreferrer"
-            style="color:inherit;"
         >
             Aviraj Salunkhe
         </a>
+
+        <div
+            class="quote-id"
+            id="quoteId"
+        >
+            Quote ID: loading...
+        </div>
+
     </div>
 
-</main>
-<script>
-    const QUOTES_FILE = "./daily_quotes.json";
+</div>
 
-    const CYCLE_MS = 12 * 60 * 60 * 1000;
+
+<!-- =========================================================
+     GITHUB ACTIONS INJECTED DATA
+
+     DO NOT REMOVE THESE VARIABLES.
+
+     GitHub Actions automatically changes these values
+     every time the workflow selects a new quote.
+     ========================================================= -->
+
+<script>
+
+    /*
+     * CURRENT_QUOTE
+     *
+     * GitHub Actions replaces this value.
+     */
+    const CURRENT_QUOTE = "";
+
+    /*
+     * CURRENT_SOURCE
+     */
+    const CURRENT_SOURCE = "ClassCrew";
+
+    /*
+     * CURRENT_QUOTE_ID
+     */
+    const CURRENT_QUOTE_ID = "";
+
+    /*
+     * CURRENT_UPDATED_AT
+     */
+    const CURRENT_UPDATED_AT = "";
+
+
+    /*
+     * ========================================================
+     * DOM ELEMENTS
+     * ========================================================
+     */
 
     const quoteElement =
         document.getElementById("quote");
 
-    const authorElement =
-        document.getElementById("author");
+    const sourceElement =
+        document.getElementById("source");
 
     const updatedAtElement =
         document.getElementById("updatedAt");
@@ -479,88 +648,206 @@
     const countdownElement =
         document.getElementById("countdown");
 
-    const cycleTimeElement =
-        document.getElementById("cycleTime");
+    const progressElement =
+        document.getElementById("progress");
 
-    const quoteCounterElement =
-        document.getElementById("quoteCounter");
+    const progressTextElement =
+        document.getElementById("progressText");
 
-    const progressBarElement =
-        document.getElementById("progressBar");
-
-    let quotes = [];
-    let currentIndex = -1;
+    const quoteIdElement =
+        document.getElementById("quoteId");
 
 
+    /*
+     * ========================================================
+     * CONFIGURATION
+     * ========================================================
+     */
 
-async function loadQuotes() {
-    try {
-        const response = await fetch(
-            `${QUOTES_FILE}?v=${Date.now()}`
-        );
+    const CYCLE_MS =
+        12 * 60 * 60 * 1000;
 
-        if (!response.ok) {
-            throw new Error(
-                `Unable to load quotes: ${response.status}`
-            );
+
+    /*
+     * ========================================================
+     * DISPLAY QUOTE
+     *
+     * IMPORTANT:
+     *
+     * The webpage DOES NOT select a quote itself.
+     *
+     * GitHub Actions selects the quote and injects it
+     * into CURRENT_QUOTE.
+     * ========================================================
+     */
+
+    function displayQuote() {
+
+        if (
+            !CURRENT_QUOTE ||
+            CURRENT_QUOTE.trim() === ""
+        ) {
+
+            quoteElement.textContent =
+                "Waiting for the first automated quote update...";
+
+            sourceElement.textContent =
+                "— ClassCrew";
+
+            return;
         }
 
-        quotes = await response.json();
 
-        if (!Array.isArray(quotes) || quotes.length === 0) {
-            throw new Error("Quote database is empty.");
+        quoteElement.style.opacity = "0";
+
+
+        setTimeout(() => {
+
+            quoteElement.textContent =
+                `“${CURRENT_QUOTE}”`;
+
+            sourceElement.textContent =
+                `— ${CURRENT_SOURCE}`;
+
+            quoteElement.style.opacity = "1";
+
+        }, 150);
+
+    }
+
+
+    /*
+     * ========================================================
+     * FORMAT DATE
+     * ========================================================
+     */
+
+    function formatDate(dateString) {
+
+        if (!dateString) {
+            return "Not available";
         }
 
-        updateBoard(true);
-        updateCountdown();
+        const date =
+            new Date(dateString);
 
-    } catch (error) {
-        console.error("Quote loading failed:", error);
+        if (Number.isNaN(date.getTime())) {
+            return dateString;
+        }
 
-        quoteElement.textContent =
-            "Unable to load today's thought.";
-
-        authorElement.innerHTML =
-            '— Admin: <a href="https://github.com/avirajsalunkhe" target="_blank" rel="noopener noreferrer">Aviraj Salunkhe</a>';
-    }
-}
-
-    function getCycleStart(now = new Date()) {
-        return (
-            Math.floor(now.getTime() / CYCLE_MS) *
-            CYCLE_MS
-        );
-    }
-
-    function getCycleIndex(now = new Date()) {
-
-        const cycleNumber =
-            Math.floor(now.getTime() / CYCLE_MS);
-
-        return cycleNumber % quotes.length;
-    }
-
-    function formatDateTime(timestamp) {
-
-        return new Intl.DateTimeFormat(
+        return date.toLocaleString(
             undefined,
             {
-                dateStyle: "medium",
-                timeStyle: "short"
+                year: "numeric",
+                month: "short",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit"
             }
-        ).format(new Date(timestamp));
+        );
+
     }
 
-    function formatCountdown(milliseconds) {
+
+    /*
+     * ========================================================
+     * GET UPDATE TIME
+     * ========================================================
+     */
+
+    function getUpdatedTime() {
+
+        if (!CURRENT_UPDATED_AT) {
+            return null;
+        }
+
+        const date =
+            new Date(CURRENT_UPDATED_AT);
+
+        if (
+            Number.isNaN(
+                date.getTime()
+            )
+        ) {
+            return null;
+        }
+
+        return date;
+
+    }
+
+
+    /*
+     * ========================================================
+     * UPDATE COUNTDOWN
+     *
+     * Countdown starts from the timestamp written by
+     * GitHub Actions.
+     * ========================================================
+     */
+
+    function updateCountdown() {
+
+        const updatedTime =
+            getUpdatedTime();
+
+        if (!updatedTime) {
+
+            countdownElement.textContent =
+                "--:--:--";
+
+            progressElement.style.width =
+                "0%";
+
+            progressTextElement.textContent =
+                "Waiting for automated update";
+
+            return;
+        }
+
+
+        const now =
+            Date.now();
+
+        const cycleStart =
+            updatedTime.getTime();
+
+        const elapsed =
+            now - cycleStart;
+
+
+        /*
+         * Determine how much time has passed
+         * since the workflow update.
+         */
+
+        const cyclePosition =
+            ((elapsed % CYCLE_MS) + CYCLE_MS)
+            % CYCLE_MS;
+
+
+        const remaining =
+            CYCLE_MS - cyclePosition;
+
+
+        /*
+         * Convert milliseconds into time.
+         */
 
         const totalSeconds =
             Math.max(
                 0,
-                Math.floor(milliseconds / 1000)
+                Math.floor(
+                    remaining / 1000
+                )
             );
 
+
         const hours =
-            Math.floor(totalSeconds / 3600);
+            Math.floor(
+                totalSeconds / 3600
+            );
 
         const minutes =
             Math.floor(
@@ -570,130 +857,87 @@ async function loadQuotes() {
         const seconds =
             totalSeconds % 60;
 
-        return (
-            String(hours).padStart(2, "0") +
-            ":" +
-            String(minutes).padStart(2, "0") +
-            ":" +
-            String(seconds).padStart(2, "0")
-        );
-    }
-
-    function updateBoard(force = false) {
-
-        if (!quotes.length) {
-            return;
-        }
-
-        const now = new Date();
-
-        const index =
-            getCycleIndex(now);
-
-        if (!force && index === currentIndex) {
-            return;
-        }
-
-        currentIndex = index;
-
-        const selectedQuote =
-            quotes[index];
-
-        quoteElement.classList.add(
-            "fade-out"
-        );
-
-        setTimeout(() => {
-
-            quoteElement.textContent =
-                selectedQuote.quote;
-
-            authorElement.innerHTML =
-                `— Admin:
-                <a
-                    href="https://github.com/avirajsalunkhe"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    Aviraj Salunkhe
-                </a>`;
-
-            quoteElement.classList.remove(
-                "fade-out"
-            );
-
-        }, 180);
-
-        const cycleStart =
-            getCycleStart(now);
-
-        const nextUpdate =
-            cycleStart + CYCLE_MS;
-
-        updatedAtElement.textContent =
-            formatDateTime(cycleStart);
-
-        cycleTimeElement.textContent =
-            formatDateTime(nextUpdate);
-
-        quoteCounterElement.textContent =
-            `Quote ${index + 1} of ${quotes.length}`;
-
-        const progress =
-            ((index + 1) / quotes.length) * 100;
-
-        progressBarElement.style.width =
-            `${progress}%`;
-    }
-
-    function updateCountdown() {
-
-        if (!quotes.length) {
-            return;
-        }
-
-        const now =
-            new Date();
-
-        const cycleStart =
-            getCycleStart(now);
-
-        const nextUpdate =
-            cycleStart + CYCLE_MS;
-
-        const remaining =
-            nextUpdate - now.getTime();
 
         countdownElement.textContent =
-            formatCountdown(remaining);
+            `${String(hours).padStart(2, "0")}:` +
+            `${String(minutes).padStart(2, "0")}:` +
+            `${String(seconds).padStart(2, "0")}`;
 
-        updateBoard(false);
+
+        /*
+         * Progress percentage.
+         */
+
+        const progress =
+            (cyclePosition / CYCLE_MS) * 100;
+
+
+        progressElement.style.width =
+            `${Math.min(100, progress)}%`;
+
+
+        progressTextElement.textContent =
+            `${Math.round(progress)}% of 12-hour cycle elapsed`;
+
     }
 
-    loadQuotes();
+
+    /*
+     * ========================================================
+     * UPDATE METADATA
+     * ========================================================
+     */
+
+    function updateMetadata() {
+
+        updatedAtElement.textContent =
+            formatDate(
+                CURRENT_UPDATED_AT
+            );
+
+
+        quoteIdElement.textContent =
+            CURRENT_QUOTE_ID
+                ? `Quote ID: ${CURRENT_QUOTE_ID}`
+                : "Quote ID: waiting...";
+    }
+
+
+    /*
+     * ========================================================
+     * INITIALIZE
+     * ========================================================
+     */
+
+    function initializeBoard() {
+
+        displayQuote();
+
+        updateMetadata();
+
+        updateCountdown();
+
+    }
+
+
+    /*
+     * ========================================================
+     * RUN
+     * ========================================================
+     */
+
+    initializeBoard();
+
+
+    /*
+     * Update countdown every second.
+     */
 
     setInterval(
         updateCountdown,
         1000
     );
 
-    document.addEventListener(
-        "visibilitychange",
-        () => {
-
-            if (!document.hidden) {
-                updateBoard(true);
-                updateCountdown();
-            }
-        }
-    );
-</script>
-
- <script>
-  const CURRENT_QUOTE = "Consistency beats intensity when the goal is long-term growth.";
-  const CURRENT_SOURCE = "ClassCrew";
-  const CURRENT_QUOTE_ID = "q004";
-  const CURRENT_UPDATED_AT = "2026-10-08T09:53:39.616264Z";
 </script>
 
 </body>
