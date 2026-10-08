@@ -20,6 +20,7 @@ env:
   HISTORY_FILE: php_auth_system/data/quote_history.json
   PAGE_FILE: Outlook Files/index.html
   TARGET_BRANCH: main
+  AUTOMATION_BRANCH: automation
 
 jobs:
   quote-update:
@@ -28,13 +29,13 @@ jobs:
     steps:
 
       # ============================================================
-      # 1. CHECKOUT MAIN
+      # 1. CHECKOUT AUTOMATION BRANCH
       # ============================================================
 
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: main
+          ref: automation
           fetch-depth: 0
           token: ${{ secrets.AVIRAJ_PAT }}
 
@@ -48,16 +49,16 @@ jobs:
           git config user.email "96661930+avirajsalunkhe@users.noreply.github.com"
 
       # ============================================================
-      # 3. CREATE DATA BRANCH
+      # 3. SYNC AUTOMATION BRANCH WITH MAIN
       # ============================================================
 
-      - name: Create data branch
+      - name: Sync automation branch with main
         run: |
-          DATA_BRANCH="automation/quote-data-${{ github.run_id }}"
+          git fetch origin main
 
-          echo "DATA_BRANCH=$DATA_BRANCH" >> "$GITHUB_ENV"
+          git checkout -B "$AUTOMATION_BRANCH" "origin/main"
 
-          git checkout -b "$DATA_BRANCH"
+          echo "Automation branch synchronized with main."
 
       # ============================================================
       # 4. VALIDATE QUOTE DATABASE
@@ -377,11 +378,17 @@ jobs:
           git commit \
             -m "chore: record quote rotation"
 
+      # ============================================================
+      # 12. PUSH AUTOMATION BRANCH
+      # ============================================================
+
+      - name: Push automation branch for PR 1
+        run: |
           git push \
-            origin "$DATA_BRANCH"
+            origin "$AUTOMATION_BRANCH"
 
       # ============================================================
-      # 12. CREATE PR #1
+      # 13. CREATE PR #1
       # ============================================================
 
       - name: Create PR 1
@@ -391,7 +398,7 @@ jobs:
         run: |
           PR1_URL=$(gh pr create \
             --repo "${{ github.repository }}" \
-            --head "$DATA_BRANCH" \
+            --head "$AUTOMATION_BRANCH" \
             --base "$TARGET_BRANCH" \
             --title "chore: record verified quote rotation" \
             --body "Records the next unused quote in quote_history.json. Selected quote: ${SELECTED_QUOTE_ID}. Quote database and quote history were validated.")
@@ -399,7 +406,7 @@ jobs:
           echo "PR1_URL=$PR1_URL" >> "$GITHUB_ENV"
 
       # ============================================================
-      # 13. COMMENT PR #1
+      # 14. COMMENT PR #1
       # ============================================================
 
       - name: Comment PR 1
@@ -411,7 +418,7 @@ jobs:
             --body "Verification passed. Selected quote: ${SELECTED_QUOTE_ID}. The selected quote was not previously present in quote_history.json. Waiting 20 seconds before merge."
 
       # ============================================================
-      # 14. WAIT BEFORE PR #1 MERGE
+      # 15. WAIT BEFORE PR #1 MERGE
       # ============================================================
 
       - name: Wait before PR 1 merge
@@ -419,7 +426,7 @@ jobs:
           sleep 20
 
       # ============================================================
-      # 15. MERGE PR #1
+      # 16. MERGE PR #1
       # ============================================================
 
       - name: Merge PR 1
@@ -431,7 +438,7 @@ jobs:
             --delete-branch=false
 
       # ============================================================
-      # 16. CLOSE ISSUE #1
+      # 17. CLOSE ISSUE #1
       # ============================================================
 
       - name: Close Issue 1
@@ -443,28 +450,16 @@ jobs:
             --comment "PR #1 was merged successfully. Quote rotation data update completed."
 
       # ============================================================
-      # 17. SYNC MAIN AFTER PR #1
+      # 18. SYNC AUTOMATION WITH UPDATED MAIN
       # ============================================================
 
-      - name: Sync main after PR 1
+      - name: Sync automation after PR 1
         run: |
           git fetch origin main
 
-          git checkout main
+          git checkout -B "$AUTOMATION_BRANCH" "origin/main"
 
-          git reset --hard origin/main
-
-      # ============================================================
-      # 18. CREATE PAGE BRANCH
-      # ============================================================
-
-      - name: Create page branch
-        run: |
-          PAGE_BRANCH="automation/quote-page-${{ github.run_id }}"
-
-          echo "PAGE_BRANCH=$PAGE_BRANCH" >> "$GITHUB_ENV"
-
-          git checkout -B "$PAGE_BRANCH" "origin/main"
+          echo "Automation branch synchronized with updated main."
 
       # ============================================================
       # 19. CREATE ISSUE #2
@@ -601,11 +596,17 @@ jobs:
           git commit \
             -m "feat: update ClassCrew quote board"
 
+      # ============================================================
+      # 24. PUSH AUTOMATION BRANCH
+      # ============================================================
+
+      - name: Push automation branch for PR 2
+        run: |
           git push \
-            origin "$PAGE_BRANCH"
+            origin "$AUTOMATION_BRANCH"
 
       # ============================================================
-      # 24. CREATE PR #2
+      # 25. CREATE PR #2
       # ============================================================
 
       - name: Create PR 2
@@ -615,7 +616,7 @@ jobs:
         run: |
           PR2_URL=$(gh pr create \
             --repo "${{ github.repository }}" \
-            --head "$PAGE_BRANCH" \
+            --head "$AUTOMATION_BRANCH" \
             --base "$TARGET_BRANCH" \
             --title "feat: update ClassCrew quote board" \
             --body "Updates Outlook Files/index.html with the verified quote ${SELECTED_QUOTE_ID}. The page retains the blackboard design, admin attribution, update time, and 12-hour countdown.")
@@ -623,7 +624,7 @@ jobs:
           echo "PR2_URL=$PR2_URL" >> "$GITHUB_ENV"
 
       # ============================================================
-      # 25. COMMENT PR #2
+      # 26. COMMENT PR #2
       # ============================================================
 
       - name: Comment PR 2
@@ -635,7 +636,7 @@ jobs:
             --body "Quote board verification passed. Selected quote: ${SELECTED_QUOTE_ID}. The page now references the verified quote selected by the automation. Waiting 20 seconds before merge."
 
       # ============================================================
-      # 26. WAIT BEFORE PR #2 MERGE
+      # 27. WAIT BEFORE PR #2 MERGE
       # ============================================================
 
       - name: Wait before PR 2 merge
@@ -643,7 +644,7 @@ jobs:
           sleep 20
 
       # ============================================================
-      # 27. MERGE PR #2
+      # 28. MERGE PR #2
       # ============================================================
 
       - name: Merge PR 2
@@ -655,7 +656,7 @@ jobs:
             --delete-branch=false
 
       # ============================================================
-      # 28. CLOSE ISSUE #2
+      # 29. CLOSE ISSUE #2
       # ============================================================
 
       - name: Close Issue 2
@@ -667,7 +668,22 @@ jobs:
             --comment "PR #2 was merged successfully. ClassCrew quote board update completed."
 
       # ============================================================
-      # 29. FINAL SUMMARY
+      # 30. FINAL AUTOMATION SYNC
+      # ============================================================
+
+      - name: Final automation branch sync
+        run: |
+          git fetch origin main
+
+          git checkout -B "$AUTOMATION_BRANCH" "origin/main"
+
+          git push \
+            origin "$AUTOMATION_BRANCH"
+
+          echo "Automation branch is ready for the next execution."
+
+      # ============================================================
+      # 31. FINAL SUMMARY
       # ============================================================
 
       - name: Execution summary
@@ -679,6 +695,9 @@ jobs:
           echo "Execution: #${{ github.run_number }}"
           echo "Selected quote: ${SELECTED_QUOTE_ID}"
           echo ""
+          echo "Permanent branches:  main + automation"
+          echo "Temporary branches:  0"
+          echo ""
           echo "Issues created:       2"
           echo "Issue comments:       2"
           echo "Pull requests:        2"
@@ -689,6 +708,8 @@ jobs:
           echo "Quote rotation:       Every 12 hours"
           echo "Duplicate checking:   ENABLED"
           echo "Quote history:        ENABLED"
+          echo "Automation branch:    $AUTOMATION_BRANCH"
+          echo "Target branch:        $TARGET_BRANCH"
           echo "Admin:                Aviraj Salunkhe"
           echo ""
           echo "=========================================="
