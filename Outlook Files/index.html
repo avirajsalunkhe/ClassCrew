@@ -463,118 +463,131 @@
     </div>
 
 </main>
-
 <script>
-    /*
-     * Local quote collection.
-     * Keeping quotes in the page means the board works without
-     * an external API or network dependency.
-     */
-    const quotes = [
-        "Small progress becomes powerful when you repeat it consistently.",
-        "Learn the concept, understand the reason, then write the code.",
-        "A difficult problem becomes smaller when you divide it into logical steps.",
-        "Consistency beats intensity when the goal is long-term growth.",
-        "Your next breakthrough may be hidden inside the problem you keep avoiding.",
-        "Good code solves today's problem; great code also respects tomorrow's changes.",
-        "Understanding why something works is more valuable than memorizing how it works.",
-        "Every bug is an opportunity to understand your system better.",
-        "Build slowly enough to understand, and quickly enough to keep learning.",
-        "The strongest developers are curious before they are confident.",
-        "A clean solution usually starts with a clear understanding of the problem.",
-        "Practice turns unfamiliar syntax into familiar thinking.",
-        "Don't fear the error; understand what the error is teaching you.",
-        "The best way to learn a technology is to build something meaningful with it.",
-        "Strong fundamentals make new frameworks easier to understand.",
-        "One solved problem is evidence that the next problem is possible.",
-        "Progress is often invisible until you compare yourself with where you started.",
-        "Readable code is a form of communication.",
-        "The best debugging tool is often a better question.",
-        "Don't measure learning by hours spent; measure it by problems understood.",
-        "A strong foundation makes complex systems less intimidating.",
-        "Every commit should move the project toward something clearer or better.",
-        "The ability to simplify complexity is a technical skill.",
-        "A failed approach is still useful when you understand why it failed.",
-        "Good software is built through decisions, not just code.",
-        "Learning to read code is as important as learning to write it.",
-        "The more clearly you understand a system, the fewer assumptions you need.",
-        "Don't chase every new technology; master the principles behind them.",
-        "A useful project is a classroom that never closes.",
-        "The best developers remain students even after becoming experts.",
-        "A difficult concept becomes easier when you explain it in your own words.",
-        "Good questions often save more time than fast typing.",
-        "The goal is not to write more code; it is to create more value.",
-        "Reliable software starts with reliable assumptions.",
-        "A small improvement repeated every day can transform a project.",
-        "Your debugging process should teach you how the system behaves.",
-        "Good developers don't memorize every answer; they know how to find the right one.",
-        "The best code review improves both the code and the developer.",
-        "Software engineering is the discipline of turning complexity into understandable systems.",
-        "Every feature is a decision about what users actually need.",
-        "Strong systems are designed for change because change is inevitable.",
-        "The quality of a solution depends on the quality of the problem definition.",
-        "Learn the fundamentals deeply and the tools become easier to replace.",
-        "A developer's strongest advantage is the ability to keep learning.",
-        "When you can explain a solution simply, you probably understand it well.",
-        "Build something, break something, understand it, and build it better.",
-        "Progress comes from turning uncertainty into small experiments.",
-        "Technology rewards people who combine curiosity with consistency.",
-        "The most valuable feature is often the one that makes the user's problem simpler.",
-        "Keep learning, keep building, and let your projects prove your growth."
-    ];
+    const QUOTES_FILE = "../php_auth_system/data/daily_quotes.json";
 
     const CYCLE_MS = 12 * 60 * 60 * 1000;
 
-    const quoteElement = document.getElementById("quote");
-    const authorElement = document.getElementById("author");
-    const updatedAtElement = document.getElementById("updatedAt");
-    const countdownElement = document.getElementById("countdown");
-    const cycleTimeElement = document.getElementById("cycleTime");
-    const quoteCounterElement = document.getElementById("quoteCounter");
-    const progressBarElement = document.getElementById("progressBar");
+    const quoteElement =
+        document.getElementById("quote");
 
+    const authorElement =
+        document.getElementById("author");
+
+    const updatedAtElement =
+        document.getElementById("updatedAt");
+
+    const countdownElement =
+        document.getElementById("countdown");
+
+    const cycleTimeElement =
+        document.getElementById("cycleTime");
+
+    const quoteCounterElement =
+        document.getElementById("quoteCounter");
+
+    const progressBarElement =
+        document.getElementById("progressBar");
+
+    let quotes = [];
     let currentIndex = -1;
 
+    async function loadQuotes() {
+        try {
+            const response =
+                await fetch(`${QUOTES_FILE}?v=${Date.now()}`);
+
+            if (!response.ok) {
+                throw new Error(
+                    `Unable to load quotes: ${response.status}`
+                );
+            }
+
+            quotes = await response.json();
+
+            if (!Array.isArray(quotes) || quotes.length === 0) {
+                throw new Error("Quote database is empty.");
+            }
+
+            updateBoard(true);
+            updateCountdown();
+
+        } catch (error) {
+
+            console.error(error);
+
+            quoteElement.textContent =
+                "Unable to load today's thought.";
+
+            authorElement.textContent =
+                "— ClassCrew";
+        }
+    }
+
     function getCycleStart(now = new Date()) {
-        const time = now.getTime();
-        return Math.floor(time / CYCLE_MS) * CYCLE_MS;
+        return (
+            Math.floor(now.getTime() / CYCLE_MS) *
+            CYCLE_MS
+        );
     }
 
     function getCycleIndex(now = new Date()) {
-        const cycle = Math.floor(now.getTime() / CYCLE_MS);
-        return cycle % quotes.length;
+
+        const cycleNumber =
+            Math.floor(now.getTime() / CYCLE_MS);
+
+        return cycleNumber % quotes.length;
     }
 
     function formatDateTime(timestamp) {
-        return new Intl.DateTimeFormat(undefined, {
-            dateStyle: "medium",
-            timeStyle: "short"
-        }).format(new Date(timestamp));
+
+        return new Intl.DateTimeFormat(
+            undefined,
+            {
+                dateStyle: "medium",
+                timeStyle: "short"
+            }
+        ).format(new Date(timestamp));
     }
 
-    function pad(value) {
-        return String(value).padStart(2, "0");
+    function formatCountdown(milliseconds) {
+
+        const totalSeconds =
+            Math.max(
+                0,
+                Math.floor(milliseconds / 1000)
+            );
+
+        const hours =
+            Math.floor(totalSeconds / 3600);
+
+        const minutes =
+            Math.floor(
+                (totalSeconds % 3600) / 60
+            );
+
+        const seconds =
+            totalSeconds % 60;
+
+        return (
+            String(hours).padStart(2, "0") +
+            ":" +
+            String(minutes).padStart(2, "0") +
+            ":" +
+            String(seconds).padStart(2, "0")
+        );
     }
 
-    function formatCountdown(ms) {
-        const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+    function updateBoard(force = false) {
 
-        const hours = Math.floor(totalSeconds / 3600);
-        const minutes = Math.floor((totalSeconds % 3600) / 60);
-        const seconds = totalSeconds % 60;
+        if (!quotes.length) {
+            return;
+        }
 
-        return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
-    }
-
-    function getCycleLabel(cycleStart) {
-        const nextCycle = cycleStart + CYCLE_MS;
-        return `${formatDateTime(cycleStart)} → ${formatDateTime(nextCycle)}`;
-    }
-
-    function updateQuote(force = false) {
         const now = new Date();
 
-        const index = getCycleIndex(now);
+        const index =
+            getCycleIndex(now);
 
         if (!force && index === currentIndex) {
             return;
@@ -582,62 +595,98 @@
 
         currentIndex = index;
 
-        quoteElement.classList.add("fade-out");
+        const selectedQuote =
+            quotes[index];
+
+        quoteElement.classList.add(
+            "fade-out"
+        );
 
         setTimeout(() => {
-            quoteElement.textContent = quotes[index];
+
+            quoteElement.textContent =
+                selectedQuote.quote;
 
             authorElement.innerHTML =
-                '— Admin: <a href="https://github.com/avirajsalunkhe" target="_blank" rel="noopener noreferrer">Aviraj Salunkhe</a>';
+                `— Admin:
+                <a
+                    href="https://github.com/avirajsalunkhe"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    Aviraj Salunkhe
+                </a>`;
 
-            quoteElement.classList.remove("fade-out");
+            quoteElement.classList.remove(
+                "fade-out"
+            );
+
         }, 180);
 
-        const cycleStart = getCycleStart(now);
+        const cycleStart =
+            getCycleStart(now);
 
-        updatedAtElement.textContent = formatDateTime(cycleStart);
-        cycleTimeElement.textContent = getCycleLabel(cycleStart);
+        const nextUpdate =
+            cycleStart + CYCLE_MS;
+
+        updatedAtElement.textContent =
+            formatDateTime(cycleStart);
+
+        cycleTimeElement.textContent =
+            formatDateTime(nextUpdate);
+
         quoteCounterElement.textContent =
             `Quote ${index + 1} of ${quotes.length}`;
 
-        const progress = ((index + 1) / quotes.length) * 100;
-        progressBarElement.style.width = `${progress}%`;
+        const progress =
+            ((index + 1) / quotes.length) * 100;
+
+        progressBarElement.style.width =
+            `${progress}%`;
     }
 
     function updateCountdown() {
-        const now = new Date();
 
-        const cycleStart = getCycleStart(now);
-        const nextUpdate = cycleStart + CYCLE_MS;
-
-        const remaining = nextUpdate - now.getTime();
-
-        countdownElement.textContent = formatCountdown(remaining);
-
-        if (remaining <= 0) {
-            updateQuote(true);
+        if (!quotes.length) {
+            return;
         }
+
+        const now =
+            new Date();
+
+        const cycleStart =
+            getCycleStart(now);
+
+        const nextUpdate =
+            cycleStart + CYCLE_MS;
+
+        const remaining =
+            nextUpdate - now.getTime();
+
+        countdownElement.textContent =
+            formatCountdown(remaining);
+
+        updateBoard(false);
     }
 
-    function startBoard() {
-        updateQuote(true);
-        updateCountdown();
+    loadQuotes();
 
-        setInterval(() => {
-            updateCountdown();
-        }, 1000);
-    }
+    setInterval(
+        updateCountdown,
+        1000
+    );
 
-    document.addEventListener("visibilitychange", () => {
-        if (!document.hidden) {
-            updateQuote();
-            updateCountdown();
+    document.addEventListener(
+        "visibilitychange",
+        () => {
+
+            if (!document.hidden) {
+                updateBoard(true);
+                updateCountdown();
+            }
         }
-    });
-
-    startBoard();
+    );
 </script>
-
 </body>
 </html>
 ```
