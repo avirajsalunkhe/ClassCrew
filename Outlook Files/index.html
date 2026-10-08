@@ -665,7 +665,6 @@
             pointer-events: none;
             -webkit-user-drag: none;
             filter: drop-shadow(0 0 8px rgba(255,161,22,.35));
-            margin-bottom: 30px;
         }
 
         /* GitHub logo badge sitting on the avatar corner */
@@ -811,6 +810,67 @@
             .divider { display: none; }
             .subtitle { margin-bottom: 6px; }
         }
+    
+        /* ===================== DECLUTTERED BLACKBOARD LAYOUT ===================== */
+
+        .board { padding: 26px 42px 18px; }
+
+        h1 { margin-top: 2px; }
+
+        /* the thought is boxed in chalk, like a "suvichar" on a school board */
+        .quote-area {
+            position: relative;
+            min-height: 150px;
+            margin: 12px 6px 6px;
+            padding: 22px 26px;
+        }
+        .quote-area::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border: 3px solid rgba(239,231,210,.72);
+            border-radius: 8px 15px 9px 17px;
+            box-shadow: 0 0 10px rgba(255,255,255,.07);
+            filter: url(#chalkRough);
+            pointer-events: none;
+        }
+
+        .board-notes {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 4px 16px;
+            margin-top: 14px;
+            padding: 0 6px;
+            font-size: 14px;
+            color: var(--chalk-dim);
+        }
+        .board-notes b {
+            font-weight: 400;
+            color: var(--chalk);
+        }
+
+        .motto {
+            text-align: center;
+            margin-top: 8px;
+            font-size: 12px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: rgba(239,231,210,.5);
+        }
+
+        /* calmer picture: no flicker, no moving grain, lighter textures */
+        .vintage .grain { animation: none; opacity: .07; }
+        .vintage .tint  { background: rgba(178,130,66,.13); }
+        .vintage .vignette { background: radial-gradient(ellipse at center, transparent 50%, rgba(45,22,6,.38) 100%); }
+        body::before { opacity: .12; }
+        .board::before { opacity: .05; }
+
+        @media (max-width: 700px) {
+            .board { padding: 20px 14px 14px; }
+            .quote-area { padding: 16px 14px; }
+            .board-notes { justify-content: center; text-align: center; }
+        }
     </style>
 </head>
 
@@ -835,7 +895,6 @@
 <div class="vintage" aria-hidden="true">
     <div class="tint"></div>
     <div class="grain"></div>
-    <div class="scratches"></div>
     <div class="vignette"></div>
 </div>
 
@@ -870,7 +929,7 @@
 
                     <div class="picture-mat">
                         <div class="logo-box">
-                            <span class="logo-fallback" style="font-size:24px;margin-top: 100px;">LeetCode</span>
+                            <span class="logo-fallback" style="font-size:24px">LeetCode</span>
                             <img class="logo"
                                  src="https://cdn.simpleicons.org/leetcode/FFA116"
                                  alt="LeetCode logo"
@@ -909,24 +968,13 @@
                             </g>
                         </svg>
 
-                        <div class="top-label chalk">ClassCrew</div>
-
                         <h1 class="chalk">Today's Thought</h1>
 
                         <svg class="underline" viewBox="0 0 400 10" preserveAspectRatio="none" aria-hidden="true">
                             <path d="M2 6 Q60 1 120 6 T240 5 T398 6" stroke="#f3f0e6" stroke-width="3" fill="none" stroke-linecap="round" opacity=".85" filter="url(#chalkRough)"/>
                         </svg>
 
-                        <div class="subtitle chalk">
-                            A new thought is placed on the board every 12 hours.
-                        </div>
-
-                        <svg class="divider" viewBox="0 0 800 8" preserveAspectRatio="none" aria-hidden="true">
-                            <path d="M4 4 Q100 0 200 4 T400 4 T600 4 T796 4" stroke="#f3f0e6" stroke-width="2" fill="none" stroke-dasharray="14 7" stroke-linecap="round" opacity=".5"/>
-                        </svg>
-
                         <!-- QUOTE -->
-                        <div class="thought-label chalk">✦ Thought of the Moment ✦</div>
 
                         <div class="quote-area">
                             <div>
@@ -934,49 +982,19 @@
                                 <div id="source">— ClassCrew</div>
                             </div>
                         </div>
-
-                        <!-- LIVE STATUS -->
-                        <div class="live-board chalk">
-                            <span class="live-dot"></span>
-                            <span>LIVE BOARD</span>
+                        <!-- BOTTOM NOTES, like a teacher's note in the corner -->
+                        <div class="board-notes chalk">
+                            <span>Updated: <b id="updatedAt">Loading...</b></span>
+                            <span>Next thought in <b id="countdown">12:00:00</b></span>
                         </div>
 
-                        <!-- INFORMATION -->
-                        <div class="info-grid">
-                            <div class="info-card">
-                                <div class="info-title">Updated At</div>
-                                <div class="info-value" id="updatedAt">Loading...</div>
-                            </div>
+                        <div class="motto chalk">Knowledge • Practice • Growth</div>
 
-                            <div class="info-card">
-                                <div class="info-title">Next Quote In</div>
-                                <div class="info-value" id="countdown">12:00:00</div>
-                            </div>
-
-                            <div class="info-card">
-                                <div class="info-title">Cycle</div>
-                                <div class="info-value" id="cycle">12 Hours</div>
-                            </div>
-                        </div>
-
-                        <!-- PROGRESS -->
-                        <div class="progress-container">
-                            <div class="progress-bar">
-                                <div id="progress"></div>
-                            </div>
-                            <div class="progress-text" id="progressText">Quote cycle</div>
-                        </div>
-
-                        <!-- FOOTER -->
-                        <div class="footer">
-                            Knowledge • Practice • Growth
-                            <br>
-                            Admin:
-                            <a href="https://github.com/avirajsalunkhe" target="_blank" rel="noopener noreferrer">
-                                Aviraj Salunkhe
-                            </a>
-
-                            <div class="quote-id" id="quoteId">Quote ID: loading...</div>
+                        <!-- needed by the script, never shown -->
+                        <div hidden>
+                            <div id="progress"></div>
+                            <div id="progressText"></div>
+                            <div id="quoteId"></div>
                         </div>
 
                     </div>
@@ -1061,7 +1079,7 @@
      *
      * GitHub Actions replaces this value.
      */
-    const CURRENT_QUOTE = "Good code solves today's problem; great code also respects tomorrow's changes.";
+    const CURRENT_QUOTE = "Your next breakthrough may be hidden inside the problem you keep avoiding.";
 
     /*
      * CURRENT_SOURCE
@@ -1071,12 +1089,12 @@
     /*
      * CURRENT_QUOTE_ID
      */
-    const CURRENT_QUOTE_ID = "q006";
+    const CURRENT_QUOTE_ID = "q005";
 
     /*
      * CURRENT_UPDATED_AT
      */
-    const CURRENT_UPDATED_AT = "2026-10-08T10:55:52.880778+00:00";
+    const CURRENT_UPDATED_AT = "2026-10-08T10:21:33.015269+00:00";
 
 
     /*
