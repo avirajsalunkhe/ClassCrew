@@ -34,14 +34,24 @@ jobs:
 
       - name: Prepare website
         run: |
-          mkdir -p "_site/Outlook Files"
+          mkdir -p "_site"
 
-          # Copy the existing webpage
-          cp "Outlook Files/index.html" "_site/Outlook Files/index.html"
+          cp "Outlook Files/index.html" \
+             "_site/index.html"
 
-          # Put the quote database beside index.html
           cp "php_auth_system/data/daily_quotes.json" \
-             "_site/Outlook Files/daily_quotes.json"
+             "_site/daily_quotes.json"
+
+      - name: Verify Pages files
+        run: |
+          test -s "_site/index.html"
+          test -s "_site/daily_quotes.json"
+
+          python3 -m json.tool \
+            "_site/daily_quotes.json" \
+            >/dev/null
+
+          echo "GitHub Pages artifact verified."
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
