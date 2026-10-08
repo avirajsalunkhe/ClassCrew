@@ -8,7 +8,7 @@
 
 This is a simple standalone HTML page that displays a daily motivational quote ("Today's Thought") on an interactive, classroom-themed **blackboard**. It adds a warm, familiar identity to the ClassCrew project.
 
-* **Blackboard header:** The board carries the school name in Marathi (जिल्हा परिषद प्राथमिक शाळा, रिंगोड वस्ती, रोपळे बु.), tying the project to its real-world, community-school roots.
+* **Blackboard header:** The board carries the school name in Marathi (जिल्हा परिषद प्राथमिक शाळा, रितोंड वस्ती, रोपळे बु.), tying the project to its real-world, community-school roots.
 * **Today's Thought:** A chalk-written motivational quote is displayed in a dashed chalk frame and attributed to *ClassCrew*. The board shows an **Updated** timestamp and a live **Next thought in** countdown, so the quote refreshes automatically on a timed cycle.
 * **Interactive chalkboard:** Visitors can pick a chalk colour (white, yellow, pink, blue) or the duster from the tray, then hold and drag on the blackboard to draw or erase. A **Reset board** button restores the original board.
 * **Hanging photo frames:** Two framed cards hang from the board. The left one links to the author's **LeetCode** profile and the right one to the author's **GitHub** profile (Aviraj Salunkhe).
