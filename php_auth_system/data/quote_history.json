@@ -1,0 +1,17 @@
+[
+  {
+    "quote_id": "q001",
+    "used_at": "2026-10-08T06:17:00Z",
+    "commit": "abc123"
+  },
+  {
+    "quote_id": "q002",
+    "used_at": "2026-10-08T18:17:00Z",
+    "commit": "def456"
+  },
+  {
+    "quote_id": "q003",
+    "used_at": "2026-10-09T06:17:00Z",
+    "commit": "ghi789"
+  }
+]
