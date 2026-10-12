@@ -37,7 +37,7 @@ jobs:
         with:
           ref: automation
           fetch-depth: 0
-          token: ${{ secrets.AVIRAJ_PAT }}
+          token: ${{ secrets.VEDANT_PAT }}
 
       # ============================================================
       # 2. CONFIGURE GIT
@@ -45,8 +45,8 @@ jobs:
 
       - name: Configure Git
         run: |
-          git config user.name "Aviraj Salunkhe"
-          git config user.email "96661930+avirajsalunkhe@users.noreply.github.com"
+          git config user.name "Vedant Ghode"
+          git config user.email "160720331+vedantghode32@users.noreply.github.com"
 
       # ============================================================
       # 3. SYNC AUTOMATION BRANCH WITH MAIN
@@ -346,7 +346,7 @@ jobs:
       - name: Create Issue 1
         id: issue1
         env:
-          GH_TOKEN: ${{ secrets.AVIRAJ_PAT }}
+          GH_TOKEN: ${{ secrets.VEDANT_PAT }}
         run: |
           ISSUE1_URL=$(gh issue create \
             --repo "${{ github.repository }}" \
@@ -361,7 +361,7 @@ jobs:
 
       - name: Comment Issue 1
         env:
-          GH_TOKEN: ${{ secrets.AVIRAJ_PAT }}
+          GH_TOKEN: ${{ secrets.VEDANT_PAT }}
         run: |
           gh issue comment "$ISSUE1_URL" \
             --repo "${{ github.repository }}" \
@@ -394,7 +394,7 @@ jobs:
       - name: Create PR 1
         id: pr1
         env:
-          GH_TOKEN: ${{ secrets.AVIRAJ_PAT }}
+          GH_TOKEN: ${{ secrets.VEDANT_PAT }}
         run: |
           PR1_URL=$(gh pr create \
             --repo "${{ github.repository }}" \
@@ -411,7 +411,7 @@ jobs:
 
       - name: Comment PR 1
         env:
-          GH_TOKEN: ${{ secrets.AVIRAJ_PAT }}
+          GH_TOKEN: ${{ secrets.VEDANT_PAT }}
         run: |
           gh pr comment "$PR1_URL" \
             --repo "${{ github.repository }}" \
@@ -431,7 +431,7 @@ jobs:
 
       - name: Merge PR 1
         env:
-          GH_TOKEN: ${{ secrets.AVIRAJ_PAT }}
+          GH_TOKEN: ${{ secrets.VEDANT_PAT }}
         run: |
           gh pr merge "$PR1_URL" \
             --merge \
@@ -443,7 +443,7 @@ jobs:
 
       - name: Close Issue 1
         env:
-          GH_TOKEN: ${{ secrets.AVIRAJ_PAT }}
+          GH_TOKEN: ${{ secrets.VEDANT_PAT }}
         run: |
           gh issue close "$ISSUE1_URL" \
             --repo "${{ github.repository }}" \
@@ -468,7 +468,7 @@ jobs:
       - name: Create Issue 2
         id: issue2
         env:
-          GH_TOKEN: ${{ secrets.AVIRAJ_PAT }}
+          GH_TOKEN: ${{ secrets.VEDANT_PAT }}
         run: |
           ISSUE2_URL=$(gh issue create \
             --repo "${{ github.repository }}" \
@@ -483,7 +483,7 @@ jobs:
 
       - name: Comment Issue 2
         env:
-          GH_TOKEN: ${{ secrets.AVIRAJ_PAT }}
+          GH_TOKEN: ${{ secrets.VEDANT_PAT }}
         run: |
           gh issue comment "$ISSUE2_URL" \
             --repo "${{ github.repository }}" \
@@ -612,7 +612,7 @@ jobs:
       - name: Create PR 2
         id: pr2
         env:
-          GH_TOKEN: ${{ secrets.AVIRAJ_PAT }}
+          GH_TOKEN: ${{ secrets.VEDANT_PAT }}
         run: |
           PR2_URL=$(gh pr create \
             --repo "${{ github.repository }}" \
@@ -629,7 +629,7 @@ jobs:
 
       - name: Comment PR 2
         env:
-          GH_TOKEN: ${{ secrets.AVIRAJ_PAT }}
+          GH_TOKEN: ${{ secrets.VEDANT_PAT }}
         run: |
           gh pr comment "$PR2_URL" \
             --repo "${{ github.repository }}" \
@@ -649,7 +649,7 @@ jobs:
 
       - name: Merge PR 2
         env:
-          GH_TOKEN: ${{ secrets.AVIRAJ_PAT }}
+          GH_TOKEN: ${{ secrets.VEDANT_PAT }}
         run: |
           gh pr merge "$PR2_URL" \
             --merge \
@@ -661,7 +661,7 @@ jobs:
 
       - name: Close Issue 2
         env:
-          GH_TOKEN: ${{ secrets.AVIRAJ_PAT }}
+          GH_TOKEN: ${{ secrets.VEDANT_PAT }}
         run: |
           gh issue close "$ISSUE2_URL" \
             --repo "${{ github.repository }}" \
@@ -710,6 +710,6 @@ jobs:
           echo "Quote history:        ENABLED"
           echo "Automation branch:    $AUTOMATION_BRANCH"
           echo "Target branch:        $TARGET_BRANCH"
-          echo "Admin:                Aviraj Salunkhe"
+          echo "Admin:                VEDANT GHODE"
           echo ""
           echo "=========================================="
