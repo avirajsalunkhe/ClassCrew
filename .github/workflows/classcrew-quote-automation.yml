@@ -2,9 +2,9 @@ name: ClassCrew Quote Automation
 
 on:
    schedule:
-     - cron: "17 */12 * * *"
+      - cron: "17 */12 * * *"
 
-  workflow_dispatch:
+   workflow_dispatch:
 
 permissions:
   contents: write
