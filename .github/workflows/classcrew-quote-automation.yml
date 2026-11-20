@@ -1,7 +1,7 @@
 name: ClassCrew Quote Automation
 
 on:
-   schedule:
+   #schedule:
       - cron: "17 */12 * * *"
 
    workflow_dispatch:
